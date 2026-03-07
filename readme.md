@@ -123,5 +123,11 @@ kubectl -n kube-system get certificate donethanks-wildcard
 kubectl -n kube-system get secret donethanks-wildcard-tls
 ```
 
+Cloudflare TXT note:
+
+- Cloudflare may display a warning that TXT content should be quoted. This is expected for ACME DNS-01 records and does not break validation.
+- Do not create or edit `_acme-challenge` TXT records manually; cert-manager creates and removes them automatically during issuance/renewal.
+- If you previously added manual `_acme-challenge` TXT records, remove them in Cloudflare so only cert-manager-managed challenge records are used.
+
 Wildcard DNS-01 automation requires an API-capable DNS provider.
 If your DNS provider does not support cert-manager solvers directly, delegate `_acme-challenge.donethanks.com` to a supported DNS zone/provider.
