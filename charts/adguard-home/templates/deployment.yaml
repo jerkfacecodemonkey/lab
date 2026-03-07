@@ -18,6 +18,56 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+      {{- if .Values.splitDns.enabled }}
+      initContainers:
+        - name: apply-split-dns
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              conf="/opt/adguardhome/conf/AdGuardHome.yaml"
+              tmp="${conf}.tmp"
+
+              if [ ! -f "$conf" ]; then
+                echo "AdGuard config not found at $conf" >&2
+                exit 1
+              fi
+
+              awk '
+                BEGIN { in_rewrites=0; inserted=0 }
+                /^  rewrites:/ {
+                  print "  rewrites:"
+{{- range .Values.splitDns.domains }}
+                  print "    - domain: {{ . }}"
+                  print "      answer: {{ $.Values.splitDns.answer }}"
+{{- end }}
+                  in_rewrites=1
+                  inserted=1
+                  next
+                }
+                in_rewrites && /^  [a-z_]+:/ {
+                  in_rewrites=0
+                }
+                !in_rewrites {
+                  print
+                }
+                END {
+                  if (!inserted) {
+                    print "  rewrites:"
+{{- range .Values.splitDns.domains }}
+                    print "    - domain: {{ . }}"
+                    print "      answer: {{ $.Values.splitDns.answer }}"
+{{- end }}
+                  }
+                }
+              ' "$conf" > "$tmp"
+
+              mv "$tmp" "$conf"
+          volumeMounts:
+            - name: conf
+              mountPath: /opt/adguardhome/conf
+      {{- end }}
       containers:
         - name: adguard-home
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

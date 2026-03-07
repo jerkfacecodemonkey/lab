@@ -33,6 +33,26 @@ Using server `192.168.1.67` from this homelab:
 - DNS is not exposed via `NodePort` by default.
 - Optional in-cluster DNS service: set `dns.service.enabled=true`.
 
+## Split DNS (GitOps Managed)
+
+This chart can enforce AdGuard rewrites on every pod start, so settings are not lost or drift from Argo CD.
+
+Default rewrites:
+
+- `donethanks.com -> 192.168.1.67`
+- `*.donethanks.com -> 192.168.1.67`
+
+Configured in `values.yaml`:
+
+```yaml
+splitDns:
+  enabled: true
+  answer: 192.168.1.67
+  domains:
+    - donethanks.com
+    - "*.donethanks.com"
+```
+
 Example to enable host networking:
 
 ```bash

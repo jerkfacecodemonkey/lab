@@ -17,6 +17,7 @@ kubectl apply -f argocd/infra/traefik-dashboard/
 ## Access
 
 - URL: `http://traefik.donethanks.com/dashboard/`
+- Direct node IP URL: `http://192.168.1.67/dashboard/`
 
 If DNS is not set up yet, test locally with:
 

@@ -40,3 +40,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+splitDns:
+  enabled: true
+  answer: 192.168.1.67
+  domains:
+    - donethanks.com
+    - "*.donethanks.com"
