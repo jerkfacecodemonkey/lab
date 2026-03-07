@@ -47,5 +47,4 @@ spec:
           - name: keycloak
             resources:
               {{- toYaml .Values.keycloak.resources | nindent 14 }}
-  {{- end }}
 {{- end }}
