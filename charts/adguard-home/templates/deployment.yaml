@@ -36,6 +36,10 @@ spec:
                 exit 1
               fi
 
+              # YAML treats unquoted '*' values as aliases. Normalize wildcard
+              # rewrite domains to quoted strings before any further edits.
+              sed -i -E 's#^([[:space:]]*- domain: )\*([^\"]+)$#\1"*\2"#' "$conf"
+
               awk '
                 BEGIN { in_rules=0; inserted=0 }
                 /^user_rules:/ {
