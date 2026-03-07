@@ -34,6 +34,12 @@ keycloak:
   # Hostname for Keycloak
   hostname: keycloak.donethanks.com
   
+  # Keycloak features to enable
+  features:
+    enabled:
+      - passkeys
+    disabled: []
+  
   # Additional Keycloak options
   additionalOptions: []
     # - name: features

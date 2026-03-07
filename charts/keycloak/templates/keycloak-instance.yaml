@@ -27,6 +27,18 @@ spec:
   proxy:
     headers: {{ .Values.keycloak.proxyHeaders }}
   
+  {{- if .Values.keycloak.features }}
+  features:
+    {{- if .Values.keycloak.features.enabled }}
+    enabled:
+      {{- toYaml .Values.keycloak.features.enabled | nindent 6 }}
+    {{- end }}
+    {{- if .Values.keycloak.features.disabled }}
+    disabled:
+      {{- toYaml .Values.keycloak.features.disabled | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  
   {{- if eq .Values.keycloak.startMode "start-dev" }}
   # Dev mode - no DB config needed
   {{- else }}
