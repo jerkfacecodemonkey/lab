@@ -24,6 +24,10 @@ helm upgrade --install argocd . \
 - `argocd/applications/argocd.yaml`
 - `argocd/applications/adguard-home.yaml`
 - `argocd/applications/cert-manager.yaml`
+- `argocd/applications/cert-manager-infra.yaml`
+- `argocd/applications/traefik-dashboard.yaml`
+- `argocd/applications/traefik-app-routes.yaml`
+- `argocd/applications/traefik-tls-default.yaml`
 
 2. Apply application manifests:
 
@@ -32,12 +36,21 @@ cd /home/jason/dev/lab
 kubectl apply -f argocd/applications/argocd.yaml
 kubectl apply -f argocd/applications/adguard-home.yaml
 kubectl apply -f argocd/applications/cert-manager.yaml
+kubectl apply -f argocd/applications/cert-manager-infra.yaml
+kubectl apply -f argocd/applications/traefik-dashboard.yaml
+kubectl apply -f argocd/applications/traefik-app-routes.yaml
+kubectl apply -f argocd/applications/traefik-tls-default.yaml
 ```
 
-3. Open the Argo CD UI and verify both apps are listed:
+3. Open the Argo CD UI and verify apps are listed:
 
 - `argocd`
 - `adguard-home`
+- `cert-manager`
+- `cert-manager-infra`
+- `traefik-dashboard`
+- `traefik-app-routes`
+- `traefik-tls-default`
 
 ## Traefik Dashboard
 
