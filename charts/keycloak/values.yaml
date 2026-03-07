@@ -15,6 +15,7 @@ keycloak:
   enabled: true
   replicas: 1
   image: quay.io/keycloak/keycloak:26.0.7
+  startOptimized: false
   
   # Start mode - use 'start-dev' for H2 database (no external DB needed)
   # or 'start' for production with external database
@@ -36,14 +37,6 @@ keycloak:
   additionalOptions: []
     # - name: features
     #   value: "token-exchange,admin-fine-grained-authz"
-
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
 # PostgreSQL Database
 postgres:
   enabled: true

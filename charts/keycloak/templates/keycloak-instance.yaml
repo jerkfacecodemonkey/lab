@@ -8,6 +8,7 @@ metadata:
     {{- include "keycloak.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.keycloak.replicas }}
+  startOptimized: {{ .Values.keycloak.startOptimized }}
   
   image: {{ .Values.keycloak.image }}
   
@@ -40,11 +41,4 @@ spec:
       key: POSTGRES_PASSWORD
   {{- end }}
   
-  unsupported:
-    podTemplate:
-      spec:
-        containers:
-          - name: keycloak
-            resources:
-              {{- toYaml .Values.keycloak.resources | nindent 14 }}
 {{- end }}
