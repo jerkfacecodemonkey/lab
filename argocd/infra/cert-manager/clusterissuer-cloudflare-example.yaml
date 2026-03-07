@@ -1,18 +1,17 @@
-# Example only: requires Cloudflare DNS and API token secret.
+# Requires Cloudflare DNS API token secret in namespace cert-manager.
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-wildcard
 spec:
   acme:
-    email: you@example.com
+    email: jasondlavoie@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-wildcard-account-key
     solvers:
       - dns01:
           cloudflare:
-            email: you@example.com
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token

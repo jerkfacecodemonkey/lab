@@ -103,8 +103,25 @@ Wildcard renewal resources are in:
 
 - `argocd/infra/cert-manager/`
 
-If authoritative DNS remains on Squarespace, cert-manager cannot directly perform `dns-01` updates there.
-Use either:
+Detailed runbook:
 
-1. DNS migration to a provider with API support, or
-2. `_acme-challenge.donethanks.com` delegation to an API-capable DNS provider.
+- `argocd/infra/cert-manager/README.md`
+
+Create/update Cloudflare token secret used by cert-manager:
+
+```bash
+kubectl -n cert-manager create secret generic cloudflare-api-token \
+	--from-literal=api-token='YOUR_CLOUDFLARE_API_TOKEN' \
+	--dry-run=client -o yaml | kubectl apply -f -
+```
+
+Quick verification:
+
+```bash
+kubectl get clusterissuer letsencrypt-wildcard
+kubectl -n kube-system get certificate donethanks-wildcard
+kubectl -n kube-system get secret donethanks-wildcard-tls
+```
+
+Wildcard DNS-01 automation requires an API-capable DNS provider.
+If your DNS provider does not support cert-manager solvers directly, delegate `_acme-challenge.donethanks.com` to a supported DNS zone/provider.
