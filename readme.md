@@ -23,6 +23,7 @@ helm upgrade --install argocd . \
 
 - `argocd/applications/argocd.yaml`
 - `argocd/applications/adguard-home.yaml`
+- `argocd/applications/cert-manager.yaml`
 
 2. Apply application manifests:
 
@@ -30,6 +31,7 @@ helm upgrade --install argocd . \
 cd /home/jason/dev/lab
 kubectl apply -f argocd/applications/argocd.yaml
 kubectl apply -f argocd/applications/adguard-home.yaml
+kubectl apply -f argocd/applications/cert-manager.yaml
 ```
 
 3. Open the Argo CD UI and verify both apps are listed:
@@ -94,3 +96,15 @@ Endpoints:
 
 - `https://argo.donethanks.com`
 - `https://adguard.donethanks.com`
+
+## cert-manager Wildcard Renewal
+
+Wildcard renewal resources are in:
+
+- `argocd/infra/cert-manager/`
+
+If authoritative DNS remains on Squarespace, cert-manager cannot directly perform `dns-01` updates there.
+Use either:
+
+1. DNS migration to a provider with API support, or
+2. `_acme-challenge.donethanks.com` delegation to an API-capable DNS provider.

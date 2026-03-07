@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: donethanks-wildcard
+  namespace: kube-system
+spec:
+  secretName: donethanks-wildcard-tls
+  issuerRef:
+    name: letsencrypt-wildcard
+    kind: ClusterIssuer
+  commonName: "*.donethanks.com"
+  dnsNames:
+    - "*.donethanks.com"
+    - "donethanks.com"
+  renewBefore: 720h
+  privateKey:
+    algorithm: RSA
+    size: 2048
