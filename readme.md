@@ -53,3 +53,26 @@ kubectl apply -f argocd/infra/traefik-dashboard/
 Access:
 
 - `http://traefik.donethanks.com/dashboard/`
+- `https://traefik.donethanks.com/dashboard/` (after `donethanks-wildcard-tls` secret is created)
+
+## Traefik Default TLS (Wildcard)
+
+Set a cluster-wide default wildcard cert for `*.donethanks.com`:
+
+- `argocd/infra/traefik-tls-default/tlsstore-default.yaml`
+
+Create/update TLS secret:
+
+```bash
+kubectl -n kube-system create secret tls donethanks-wildcard-tls \
+	--cert=/path/to/fullchain.pem \
+	--key=/path/to/privkey.pem \
+	--dry-run=client -o yaml | kubectl apply -f -
+```
+
+Apply TLSStore:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f argocd/infra/traefik-tls-default/
+```

@@ -6,6 +6,8 @@ metadata:
 spec:
   entryPoints:
     - web
+    - websecure
+  tls: {}
   routes:
     - kind: Rule
       match: PathPrefix(`/api`) || PathPrefix(`/dashboard`)

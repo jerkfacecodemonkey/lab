@@ -18,6 +18,7 @@ kubectl apply -f argocd/infra/traefik-dashboard/
 
 - URL: `http://traefik.donethanks.com/dashboard/`
 - Direct node IP URL: `http://192.168.1.67/dashboard/`
+- HTTPS URL (uses Traefik default TLS cert when configured): `https://traefik.donethanks.com/dashboard/`
 
 If DNS is not set up yet, test locally with:
 
