@@ -6,7 +6,7 @@ metadata:
     {{- include "adguard-home.labels" . | nindent 4 }}
 spec:
   strategy:
-    type: {{- if or .Values.dns.hostPort.enabled .Values.dns.hostNetwork.enabled -}}Recreate{{- else -}}RollingUpdate{{- end }}
+    type: {{ if or .Values.dns.hostPort.enabled .Values.dns.hostNetwork.enabled }}Recreate{{ else }}RollingUpdate{{ end }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
