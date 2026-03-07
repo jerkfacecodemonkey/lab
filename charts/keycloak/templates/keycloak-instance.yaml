@@ -32,7 +32,6 @@ spec:
           - name: keycloak
             args:
               - start-dev
-              - --http-relative-path=/
             env:
               - name: KC_HEALTH_ENABLED
                 value: "true"
