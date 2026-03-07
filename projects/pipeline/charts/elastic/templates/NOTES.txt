@@ -1,0 +1,10 @@
+Elastic stack resources rendered.
+
+After deploying this chart:
+
+  kubectl -n {{ .Values.namespace }} get pods
+  kubectl -n {{ .Values.namespace }} get svc
+
+Access endpoints from host:
+- Elasticsearch API: http://localhost:{{ .Values.elasticsearch.service.nodePort }}
+- Kibana UI: http://localhost:{{ .Values.kibana.service.nodePort }}

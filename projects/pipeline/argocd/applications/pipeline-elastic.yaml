@@ -1,17 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: pipeline-elastic
   namespace: argocd
+  labels:
+    homelab.donethanks.com/project: pipeline
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: core
+  project: pipeline
   source:
     repoURL: git@github.com:jerkfacecodemonkey/lab.git
     targetRevision: HEAD
-    path: charts/cert-manager
+    path: projects/pipeline/charts/elastic
+    helm:
+      releaseName: elastic
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    namespace: elastic
   syncPolicy:
     automated:
       prune: true

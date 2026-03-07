@@ -19,7 +19,14 @@ helm upgrade --install argocd . \
 
 ## Load Applications Into Argo CD
 
-1. Confirm `repoURL` is set correctly in:
+1. Create the Argo CD project for core platform apps:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f argocd/projects/core.yaml
+```
+
+2. Confirm `repoURL` is set correctly in:
 
 - `argocd/applications/argocd.yaml`
 - `argocd/applications/adguard-home.yaml`
@@ -29,7 +36,7 @@ helm upgrade --install argocd . \
 - `argocd/applications/traefik-app-routes.yaml`
 - `argocd/applications/traefik-tls-default.yaml`
 
-2. Apply application manifests:
+3. Apply application manifests:
 
 ```bash
 cd /home/jason/dev/lab
@@ -42,7 +49,7 @@ kubectl apply -f argocd/applications/traefik-app-routes.yaml
 kubectl apply -f argocd/applications/traefik-tls-default.yaml
 ```
 
-3. Open the Argo CD UI and verify apps are listed:
+4. Open the Argo CD UI and verify apps are listed in project `core`:
 
 - `argocd`
 - `adguard-home`
@@ -51,6 +58,58 @@ kubectl apply -f argocd/applications/traefik-tls-default.yaml
 - `traefik-dashboard`
 - `traefik-app-routes`
 - `traefik-tls-default`
+
+## Project Organization (Core vs Workloads)
+
+Recommended pattern:
+
+- Keep shared platform in this repo under Argo project `core`.
+- Create workload projects under a separate top-level folder, one folder per project, each with its own Argo `AppProject` and `Application` manifests.
+- Teardown a workload by deleting only that workload `AppProject`/`Application` set; leave `core` untouched.
+
+Suggested layout:
+
+- `argocd/projects/core.yaml`
+- `projects/<project-name>/argocd/project.yaml`
+- `projects/<project-name>/argocd/applications/*.yaml`
+- `projects/<project-name>/charts/*` or `projects/<project-name>/manifests/*`
+
+When to split into a separate GitHub repo:
+
+- Use a separate repo if you want independent access controls, branch/release lifecycle, or easier archival of a project.
+- Use the same repo (folder-per-project) if only you manage it and you want simpler operations.
+
+Project template:
+
+- `projects/_template/`
+
+## Pipeline Project (Migrated from kp)
+
+Pipeline project files:
+
+- `projects/pipeline/argocd/project.yaml`
+- `projects/pipeline/argocd/applications/`
+- `projects/pipeline/charts/{elastic,kafka,kafka-ui,logstash,topics}`
+
+Apply:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f projects/pipeline/argocd/project.yaml
+kubectl apply -f projects/pipeline/argocd/applications/
+```
+
+Important:
+
+- Argo syncs from Git, not local workspace files. Commit and push `projects/pipeline/*` before expecting `Synced` status.
+- `pipeline` includes `pipeline-strimzi-operator` because Kafka/Topic charts require Strimzi CRDs/controllers.
+- `kafka-ui` NodePort is set to `30082` to avoid conflict with Argo CD `30080`.
+
+Optional helper scripts:
+
+- `projects/pipeline/scripts/apply-elastic-security-secret.sh`
+- `projects/pipeline/scripts/apply-logstash-elastic-secret.sh`
+- `projects/pipeline/.env.example`
 
 ## Traefik Dashboard
 

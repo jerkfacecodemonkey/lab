@@ -1,0 +1,37 @@
+kafkaNamespace: kafka
+
+kafka:
+  name: strimzi-kafka
+  version: 4.1.1
+  metadataVersion: 4.1-IV1
+  tls:
+    port: 9093
+    clientAuth: true
+
+nodePool:
+  name: default
+  replicas: 3
+  storage:
+    size: 10Gi
+    class: ""
+
+entityOperator:
+  topicOperator:
+    enabled: true
+  userOperator:
+    enabled: true
+
+# NOTE:
+# Strimzi supports mTLS natively. For strict FIPS, use a custom Kafka image
+# that already includes your approved FIPS providers/config and enable below.
+fips:
+  enabled: false
+  kafkaImage: ""
+  javaSecurityPropertiesPath: "/opt/kafka/custom-config/java.security"
+
+kafkaUiUser:
+  create: true
+  name: kafka-ui
+  acls:
+    topicPrefix: "*"
+    groupPrefix: "*"

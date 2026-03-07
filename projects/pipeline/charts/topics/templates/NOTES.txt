@@ -1,0 +1,42 @@
+Kafka Topics Helm Chart
+
+This chart creates Kafka topics as KafkaTopic custom resources.
+
+Usage:
+
+1. Define topics in values.yaml:
+
+  topics:
+    - name: my-topic
+      partitions: 3
+      replicationFactor: 3
+      config:
+        retention.ms: "604800000"
+        compression.type: "snappy"
+    - name: another-topic
+      partitions: 1
+      replicationFactor: 1
+
+2. Install:
+
+  helm install kafka-topics ./kafka-topics -n kafka
+
+3. Check topic CR status:
+
+  kubectl -n kafka get topic
+
+4. Describe a topic CR:
+
+  kubectl -n kafka describe topic <topic-cr-name>
+
+Configuration:
+
+- topicCR.apiVersion: KafkaTopic API version (default: kafka.strimzi.io/v1beta2)
+- topicCR.clusterName: Strimzi Kafka cluster label selector (default: strimzi-kafka)
+- topics: List of topics to create (required)
+
+Each topic requires:
+- name: Topic name
+- partitions: Number of partitions (optional, default: 1)
+- replicationFactor: Replication factor (optional, default: 1)
+- config: Map of topic configs (optional)

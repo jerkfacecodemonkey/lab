@@ -1,0 +1,46 @@
+namespace: kafka
+
+logstash:
+  replicaCount: 1
+  image:
+    repository: docker.elastic.co/logstash/logstash
+    tag: 9.3.0
+    pullPolicy: IfNotPresent
+
+  bootstrapServers: strimzi-kafka-kafka-bootstrap.kafka.svc.cluster.local:9093
+  consumerGroupId: logstash-elasticsearch
+
+  topicMappings:
+    - topic: another-topic
+      index: messages-from-another-topic
+    - topic: the-topic
+      index: messages-from-the-topic
+    - topic: last-topic
+      index: messages-from-last-topic
+    - topic: one-more-topic
+      index: messages-from-one-more-topic
+
+  kafkaTls:
+    clientSecretName: logstash
+    clientKeystoreFile: user.p12
+    clientKeystorePasswordKey: user.password
+    trustSecretName: strimzi-kafka-cluster-ca-cert
+    truststoreFile: ca.p12
+    truststorePasswordKey: ca.password
+
+  elasticsearch:
+    hosts:
+      - http://elasticsearch.elastic.svc.cluster.local:9200
+    ilmEnabled: false
+    sslEnabled: false
+    username: "elastic"
+    # Use an externally-managed Secret for Elasticsearch auth.
+    createPasswordSecret: false
+    passwordSecretName: "logstash-elasticsearch-credentials"
+    passwordSecretKey: "password"
+
+  resources: {}
+
+security:
+  clusterName: strimzi-kafka
+  userName: logstash

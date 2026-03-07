@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pipeline
+  namespace: argocd
+spec:
+  description: Project workloads for data pipeline services.
+  sourceRepos:
+    - git@github.com:jerkfacecodemonkey/lab.git
+    - https://strimzi.io/charts/
+  destinations:
+    - namespace: kafka
+      server: https://kubernetes.default.svc
+    - namespace: elastic
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

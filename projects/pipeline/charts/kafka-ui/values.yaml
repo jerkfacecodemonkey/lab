@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  repository: provectuslabs/kafka-ui
+  tag: v0.7.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30082
+
+kafka:
+  clusterName: strimzi-kafka
+  bootstrapServers: strimzi-kafka-kafka-bootstrap.kafka.svc.cluster.local:9093
+  tls:
+    enabled: true
+    clientSecretName: kafka-ui
+    clientKeystoreFile: user.p12
+    clientKeystorePasswordKey: user.password
+    trustSecretName: strimzi-kafka-cluster-ca-cert
+    truststoreFile: ca.p12
+    truststorePasswordKey: ca.password
+
+resources: {}

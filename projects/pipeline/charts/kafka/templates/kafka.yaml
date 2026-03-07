@@ -1,0 +1,63 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ .Values.kafka.name }}
+  namespace: {{ .Values.kafkaNamespace }}
+  annotations:
+    strimzi.io/kraft: enabled
+    strimzi.io/node-pools: enabled
+spec:
+  kafka:
+    version: {{ .Values.kafka.version | quote }}
+    metadataVersion: {{ .Values.kafka.metadataVersion | quote }}
+    listeners:
+      - name: tls
+        port: {{ .Values.kafka.tls.port }}
+        type: internal
+        tls: true
+        {{- if .Values.kafka.tls.clientAuth }}
+        authentication:
+          type: tls
+        {{- end }}
+    config:
+      offsets.topic.replication.factor: {{ .Values.nodePool.replicas }}
+      transaction.state.log.replication.factor: {{ .Values.nodePool.replicas }}
+      transaction.state.log.min.isr: 2
+      default.replication.factor: {{ .Values.nodePool.replicas }}
+      min.insync.replicas: 2
+    authorization:
+      type: simple
+    {{- if .Values.fips.enabled }}
+    image: {{ .Values.fips.kafkaImage | quote }}
+    jvmOptions:
+      javaSystemProperties:
+        - name: java.security.properties
+          value: {{ .Values.fips.javaSecurityPropertiesPath | quote }}
+    {{- end }}
+  entityOperator:
+    {{- if .Values.entityOperator.topicOperator.enabled }}
+    topicOperator: {}
+    {{- end }}
+    {{- if .Values.entityOperator.userOperator.enabled }}
+    userOperator: {}
+    {{- end }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: {{ .Values.nodePool.name }}
+  namespace: {{ .Values.kafkaNamespace }}
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.name }}
+spec:
+  replicas: {{ .Values.nodePool.replicas }}
+  roles:
+    - broker
+    - controller
+  storage:
+    type: persistent-claim
+    size: {{ .Values.nodePool.storage.size }}
+    deleteClaim: false
+    {{- if .Values.nodePool.storage.class }}
+    class: {{ .Values.nodePool.storage.class | quote }}
+    {{- end }}

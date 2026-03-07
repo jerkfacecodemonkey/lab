@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kafka-ui.fullname" . }}
+  labels:
+    {{- include "kafka-ui.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka-ui.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "kafka-ui.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: kafka-ui
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: KAFKA_CLUSTERS_0_NAME
+              value: {{ .Values.kafka.clusterName | quote }}
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: {{ .Values.kafka.bootstrapServers | quote }}
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL
+              value: SSL
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_TYPE
+              value: PKCS12
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION
+              value: "/etc/kafka-ui/tls/{{ .Values.kafka.tls.truststoreFile }}"
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kafka.tls.trustSecretName }}
+                  key: {{ .Values.kafka.tls.truststorePasswordKey }}
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_TYPE
+              value: PKCS12
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_LOCATION
+              value: "/etc/kafka-ui/tls/{{ .Values.kafka.tls.clientKeystoreFile }}"
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kafka.tls.clientSecretName }}
+                  key: {{ .Values.kafka.tls.clientKeystorePasswordKey }}
+            - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kafka.tls.clientSecretName }}
+                  key: {{ .Values.kafka.tls.clientKeystorePasswordKey }}
+          volumeMounts:
+            - name: kafka-tls
+              mountPath: /etc/kafka-ui/tls
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: kafka-tls
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.kafka.tls.clientSecretName }}
+              - secret:
+                  name: {{ .Values.kafka.tls.trustSecretName }}

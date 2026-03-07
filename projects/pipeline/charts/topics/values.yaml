@@ -1,0 +1,18 @@
+topics:
+  - name: the-topic
+    partitions: 3
+    replicationFactor: 3
+  - name: another-topic
+    partitions: 3
+    replicationFactor: 3
+  - name: last-topic
+    partitions: 3
+    replicationFactor: 3
+  - name: one-more-topic
+    partitions: 3
+    replicationFactor: 3
+
+
+topicCR:
+  apiVersion: kafka.strimzi.io/v1beta2
+  clusterName: strimzi-kafka

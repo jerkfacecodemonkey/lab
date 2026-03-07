@@ -1,0 +1,22 @@
+{{- range .Values.topics }}
+---
+apiVersion: {{ $.Values.topicCR.apiVersion }}
+kind: KafkaTopic
+metadata:
+  name: {{ include "kafka-topics.topicResourceName" (dict "topicName" .name) }}
+  labels:
+    {{- include "kafka-topics.labels" $ | nindent 4 }}
+    strimzi.io/cluster: {{ $.Values.topicCR.clusterName | quote }}
+  annotations:
+    kafka.topic/name: {{ .name | quote }}
+spec:
+  topicName: {{ .name | quote }}
+  partitions: {{ .partitions | default 1 }}
+  replicas: {{ .replicationFactor | default 1 }}
+  {{- with .config }}
+  config:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}

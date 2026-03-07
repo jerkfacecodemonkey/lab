@@ -4,7 +4,7 @@ metadata:
   name: traefik-tls-default
   namespace: argocd
 spec:
-  project: default
+  project: core
   source:
     repoURL: git@github.com:jerkfacecodemonkey/lab.git
     targetRevision: HEAD

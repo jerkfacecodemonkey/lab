@@ -1,0 +1,39 @@
+{{- if .Values.kafkaUiUser.create }}
+{{- $topicAcl := (.Values.kafkaUiUser.acls.topicPrefix | default "*") -}}
+{{- $groupAcl := (.Values.kafkaUiUser.acls.groupPrefix | default "*") -}}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: {{ .Values.kafkaUiUser.name }}
+  namespace: {{ .Values.kafkaNamespace }}
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.name }}
+spec:
+  authentication:
+    type: tls
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: {{ $topicAcl | quote }}
+          patternType: {{ ternary "literal" "prefix" (eq $topicAcl "*") }}
+        operations:
+          - Write
+          - Read
+          - Describe
+          - Delete
+      - resource:
+          type: group
+          name: {{ $groupAcl | quote }}
+          patternType: {{ ternary "literal" "prefix" (eq $groupAcl "*") }}
+        operations:
+          - Read
+          - Describe
+          - Delete
+      - resource:
+          type: cluster
+        operations:
+          - Describe
+          - IdempotentWrite
+{{- end }}

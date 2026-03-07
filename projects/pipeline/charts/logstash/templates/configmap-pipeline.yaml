@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "logstash.fullname" . }}-pipeline
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "logstash.labels" . | nindent 4 }}
+data:
+  pipeline.conf: |
+    {{- $topics := list }}
+    {{- range .Values.logstash.topicMappings }}
+    {{- $topics = append $topics (printf "\"%s\"" .topic) }}
+    {{- end }}
+    {{- $hosts := list }}
+    {{- range .Values.logstash.elasticsearch.hosts }}
+    {{- $hosts = append $hosts (printf "\"%s\"" .) }}
+    {{- end }}
+    input {
+      kafka {
+        bootstrap_servers => "{{ .Values.logstash.bootstrapServers }}"
+        topics => [{{ join ", " $topics }}]
+        group_id => "{{ .Values.logstash.consumerGroupId }}"
+        auto_offset_reset => "latest"
+        security_protocol => "SSL"
+        ssl_keystore_type => "PKCS12"
+        ssl_keystore_location => "/etc/logstash/certs/{{ .Values.logstash.kafkaTls.clientKeystoreFile }}"
+        ssl_keystore_password => "${KAFKA_SSL_KEYSTORE_PASSWORD}"
+        ssl_truststore_type => "PKCS12"
+        ssl_truststore_location => "/etc/logstash/certs/{{ .Values.logstash.kafkaTls.truststoreFile }}"
+        ssl_truststore_password => "${KAFKA_SSL_TRUSTSTORE_PASSWORD}"
+        decorate_events => true
+        codec => json
+      }
+    }
+
+    filter {
+      mutate {
+        add_field => { "[@metadata][target_index]" => "%{[@metadata][kafka][topic]}" }
+      }
+
+      translate {
+        field => "[@metadata][target_index]"
+        destination => "[@metadata][target_index]"
+        fallback => "%{[@metadata][target_index]}"
+        dictionary => {
+          {{- range .Values.logstash.topicMappings }}
+          "{{ .topic }}" => "{{ .index }}"
+          {{- end }}
+        }
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => [{{ join ", " $hosts }}]
+        index => "%{[@metadata][target_index]}"
+        ilm_enabled => {{ .Values.logstash.elasticsearch.ilmEnabled }}
+        ssl_enabled => {{ .Values.logstash.elasticsearch.sslEnabled }}
+        {{- if .Values.logstash.elasticsearch.username }}
+        user => "{{ .Values.logstash.elasticsearch.username }}"
+        {{- end }}
+        {{- if .Values.logstash.elasticsearch.passwordSecretName }}
+        password => "${ELASTICSEARCH_PASSWORD}"
+        {{- end }}
+      }
+    }

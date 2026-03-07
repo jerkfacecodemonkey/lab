@@ -1,0 +1,10 @@
+Kafka UI is deployed.
+
+Access:
+
+- NodePort URL: http://localhost:{{ .Values.service.nodePort }}
+- In-cluster service: http://{{ include "kafka-ui.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Check status:
+
+  kubectl -n {{ .Release.Namespace }} get deploy,svc | grep {{ include "kafka-ui.fullname" . }}

@@ -1,0 +1,13 @@
+Strimzi Kafka resources rendered.
+
+After deploying this chart, use:
+
+  kubectl -n {{ .Values.kafkaNamespace }} get kafka
+  kubectl -n {{ .Values.kafkaNamespace }} get kafkatopic
+  kubectl -n {{ .Values.kafkaNamespace }} get secret {{ .Values.kafkaUiUser.name }}
+
+mTLS:
+- Enabled via TLS listener with client authentication.
+
+FIPS:
+- Set fips.enabled=true and provide fips.kafkaImage built with your approved FIPS providers.

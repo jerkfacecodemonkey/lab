@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: REPLACE_PROJECT_NAME
+  namespace: argocd
+spec:
+  description: Workload project REPLACE_PROJECT_NAME.
+  sourceRepos:
+    - git@github.com:jerkfacecodemonkey/lab.git
+  destinations:
+    - namespace: REPLACE_NAMESPACE
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

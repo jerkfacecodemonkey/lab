@@ -1,0 +1,8 @@
+Logstash has been deployed.
+
+Kafka topic -> Elasticsearch index mappings come from values:
+  - logstash.topicMappings
+
+Useful checks:
+  kubectl -n {{ .Values.namespace }} get deploy,pods | grep {{ include "logstash.fullname" . }}
+  kubectl -n {{ .Values.namespace }} logs deploy/{{ include "logstash.fullname" . }}

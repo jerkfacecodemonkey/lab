@@ -1,24 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: adguard-home
+  name: pipeline-kafka
   namespace: argocd
+  labels:
+    homelab.donethanks.com/project: pipeline
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: core
+  project: pipeline
   source:
     repoURL: git@github.com:jerkfacecodemonkey/lab.git
     targetRevision: HEAD
-    path: charts/adguard-home
+    path: projects/pipeline/charts/kafka
     helm:
-      parameters:
-        - name: service.nodePorts.web
-          value: "30081"
+      releaseName: strimzi-kafka
   destination:
     server: https://kubernetes.default.svc
-    namespace: adguard-home
+    namespace: kafka
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

@@ -1,0 +1,55 @@
+namespace: elastic
+createNamespace: true
+
+security:
+  enabled: true
+  createSecret: true
+  existingSecretName: ""
+  elastic:
+    username: elastic
+    password: "change-me-elastic"
+  kibana:
+    username: kibana_system
+    password: "change-me-kibana"
+
+elasticsearch:
+  image:
+    repository: docker.elastic.co/elasticsearch/elasticsearch
+    tag: 9.3.0
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  javaOpts: "-Xms512m -Xmx512m"
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+  service:
+    type: NodePort
+    port: 9200
+    transportPort: 9300
+    nodePort: 30920
+
+kibana:
+  image:
+    repository: docker.elastic.co/kibana/kibana
+    tag: 9.3.0
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  service:
+    type: NodePort
+    port: 5601
+    nodePort: 30601
