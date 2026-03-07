@@ -1,0 +1,42 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: excalidraw-redirect-https
+  namespace: excalidraw
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: excalidraw-http
+  namespace: excalidraw
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`excalidraw.donethanks.com`)
+      middlewares:
+        - name: excalidraw-redirect-https
+      services:
+        - name: excalidraw
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: excalidraw-https
+  namespace: excalidraw
+spec:
+  entryPoints:
+    - websecure
+  tls: {}
+  routes:
+    - kind: Rule
+      match: Host(`excalidraw.donethanks.com`)
+      services:
+        - name: excalidraw
+          port: 80

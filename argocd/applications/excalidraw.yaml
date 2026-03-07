@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: excalidraw
+  namespace: argocd
+spec:
+  project: core
+  source:
+    repoURL: git@github.com:jerkfacecodemonkey/lab.git
+    targetRevision: HEAD
+    path: charts/excalidraw
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: excalidraw
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

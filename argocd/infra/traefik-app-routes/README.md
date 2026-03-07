@@ -4,6 +4,7 @@ This directory configures HTTPS routes for:
 
 - `argo.donethanks.com` -> `argocd/argocd-server`
 - `adguard.donethanks.com` -> `adguard-home/adguard-home`
+- `excalidraw.donethanks.com` -> `excalidraw/excalidraw`
 
 Both routes use:
 

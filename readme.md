@@ -30,6 +30,7 @@ kubectl apply -f argocd/projects/core.yaml
 
 - `argocd/applications/argocd.yaml`
 - `argocd/applications/adguard-home.yaml`
+- `argocd/applications/excalidraw.yaml`
 - `argocd/applications/cert-manager.yaml`
 - `argocd/applications/cert-manager-infra.yaml`
 - `argocd/applications/traefik-dashboard.yaml`
@@ -42,6 +43,7 @@ kubectl apply -f argocd/projects/core.yaml
 cd /home/jason/dev/lab
 kubectl apply -f argocd/applications/argocd.yaml
 kubectl apply -f argocd/applications/adguard-home.yaml
+kubectl apply -f argocd/applications/excalidraw.yaml
 kubectl apply -f argocd/applications/cert-manager.yaml
 kubectl apply -f argocd/applications/cert-manager-infra.yaml
 kubectl apply -f argocd/applications/traefik-dashboard.yaml
@@ -53,6 +55,7 @@ kubectl apply -f argocd/applications/traefik-tls-default.yaml
 
 - `argocd`
 - `adguard-home`
+- `excalidraw`
 - `cert-manager`
 - `cert-manager-infra`
 - `traefik-dashboard`
@@ -153,7 +156,7 @@ kubectl apply -f argocd/infra/traefik-tls-default/
 
 ## Traefik App TLS Routes
 
-HTTPS routes for Argo CD and AdGuard are in:
+HTTPS routes for Argo CD, AdGuard, and Excalidraw are in:
 
 - `argocd/infra/traefik-app-routes/`
 
@@ -168,6 +171,7 @@ Endpoints:
 
 - `https://argo.donethanks.com`
 - `https://adguard.donethanks.com`
+- `https://excalidraw.donethanks.com`
 
 ## cert-manager Wildcard Renewal
 
