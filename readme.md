@@ -76,3 +76,21 @@ Apply TLSStore:
 cd /home/jason/dev/lab
 kubectl apply -f argocd/infra/traefik-tls-default/
 ```
+
+## Traefik App TLS Routes
+
+HTTPS routes for Argo CD and AdGuard are in:
+
+- `argocd/infra/traefik-app-routes/`
+
+Apply:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f argocd/infra/traefik-app-routes/
+```
+
+Endpoints:
+
+- `https://argo.donethanks.com`
+- `https://adguard.donethanks.com`
