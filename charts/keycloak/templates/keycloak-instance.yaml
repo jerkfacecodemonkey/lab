@@ -25,18 +25,22 @@ spec:
     strictBackchannel: false
   
   {{- if eq .Values.keycloak.startMode "start-dev" }}
+  # Dev mode - no external DB needed, uses H2
+  additionalOptions:
+    - name: health-enabled
+      value: "true"
+    - name: metrics-enabled
+      value: "true"
+  
   unsupported:
     podTemplate:
       spec:
         containers:
           - name: keycloak
+            command:
+              - /opt/keycloak/bin/kc.sh
             args:
               - start-dev
-            env:
-              - name: KC_HEALTH_ENABLED
-                value: "true"
-              - name: KC_METRICS_ENABLED
-                value: "true"
             resources:
               {{- toYaml .Values.keycloak.resources | nindent 14 }}
   {{- else }}
