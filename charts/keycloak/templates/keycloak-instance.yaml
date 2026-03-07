@@ -21,9 +21,11 @@ spec:
     tlsSecret: ""
   
   hostname:
-    hostname: {{ .Values.keycloak.hostname }}
+    hostname: https://{{ .Values.keycloak.hostname }}
     strict: false
-    strictBackchannel: false
+
+  proxy:
+    headers: {{ .Values.keycloak.proxyHeaders }}
   
   {{- if eq .Values.keycloak.startMode "start-dev" }}
   # Dev mode - no DB config needed

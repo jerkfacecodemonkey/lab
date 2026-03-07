@@ -16,6 +16,7 @@ keycloak:
   replicas: 1
   image: quay.io/keycloak/keycloak:26.0.7
   startOptimized: false
+  proxyHeaders: xforwarded
   
   # Start mode - use 'start-dev' for H2 database (no external DB needed)
   # or 'start' for production with external database
