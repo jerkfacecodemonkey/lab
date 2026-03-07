@@ -25,38 +25,27 @@ spec:
     strictBackchannel: false
   
   {{- if eq .Values.keycloak.startMode "start-dev" }}
-  # Dev mode configuration - operator handles this natively
-  {{- with .Values.keycloak.additionalOptions }}
-  additionalOptions:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  # Dev mode - no DB config needed
   {{- else }}
-  # For production mode, configure external database here
+  # Production mode with PostgreSQL
   db:
     vendor: postgres
-    host: "{{ .Values.keycloak.db.host }}"
-    database: "{{ .Values.keycloak.db.database }}"
+    host: postgres.{{ .Release.Namespace }}.svc.cluster.local
+    database: {{ .Values.postgres.database }}
     usernameSecret:
-      name: "{{ .Values.keycloak.db.usernameSecret.name }}"
-      key: "{{ .Values.keycloak.db.usernameSecret.key }}"
+      name: postgres-secrets
+      key: POSTGRES_USER
     passwordSecret:
-      name: "{{ .Values.keycloak.db.passwordSecret.name }}"
-      key: "{{ .Values.keycloak.db.passwordSecret.key }}"
+      name: postgres-secrets
+      key: POSTGRES_PASSWORD
+  {{- end }}
   
   unsupported:
     podTemplate:
       spec:
         containers:
           - name: keycloak
-            args:
-              - start
-              - --optimized
             resources:
               {{- toYaml .Values.keycloak.resources | nindent 14 }}
-  {{- end }}
-  
-  {{- with .Values.keycloak.additionalOptions }}
-  additionalOptions:
-    {{- toYaml . | nindent 4 }}
   {{- end }}
 {{- end }}

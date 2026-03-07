@@ -18,7 +18,8 @@ keycloak:
   
   # Start mode - use 'start-dev' for H2 database (no external DB needed)
   # or 'start' for production with external database
-  startMode: start-dev
+  # Note: Operator always uses production mode, so we provide postgres
+  startMode: start
   
   # Admin credentials secret
   adminSecret:
@@ -43,7 +44,21 @@ keycloak:
     requests:
       cpu: 500m
       memory: 512Mi
-
+# PostgreSQL Database
+postgres:
+  enabled: true
+  image: postgres:16-alpine
+  database: keycloak
+  username: keycloak
+  password: changeme-keycloak-postgres  # Change this!
+  storage: 2Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 ingress:
   enabled: true
   host: keycloak.donethanks.com
