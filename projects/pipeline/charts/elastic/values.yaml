@@ -53,3 +53,8 @@ kibana:
     type: NodePort
     port: 5601
     nodePort: 30601
+
+ingress:
+  enabled: true
+  kibanaHost: kibana.donethanks.com
+  elasticHost: elastic.donethanks.com

@@ -1,0 +1,77 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: elastic-redirect-https
+  namespace: {{ .Values.namespace }}
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kibana-http
+  namespace: {{ .Values.namespace }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.kibanaHost }}`)
+      middlewares:
+        - name: elastic-redirect-https
+      services:
+        - name: kibana
+          port: {{ .Values.kibana.service.port }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kibana-https
+  namespace: {{ .Values.namespace }}
+spec:
+  entryPoints:
+    - websecure
+  tls: {}
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.kibanaHost }}`)
+      services:
+        - name: kibana
+          port: {{ .Values.kibana.service.port }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: elastic-http
+  namespace: {{ .Values.namespace }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.elasticHost }}`)
+      middlewares:
+        - name: elastic-redirect-https
+      services:
+        - name: elasticsearch
+          port: {{ .Values.elasticsearch.service.port }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: elastic-https
+  namespace: {{ .Values.namespace }}
+spec:
+  entryPoints:
+    - websecure
+  tls: {}
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.ingress.elasticHost }}`)
+      services:
+        - name: elasticsearch
+          port: {{ .Values.elasticsearch.service.port }}
+{{- end }}

@@ -11,6 +11,14 @@ This project isolates the pipeline stack from core lab infrastructure.
 - Elasticsearch + Kibana
 - Logstash
 
+## Exposed HTTPS Endpoints
+
+- `https://kibana.donethanks.com` -> `elastic/kibana`
+- `https://elastic.donethanks.com` -> `elastic/elasticsearch`
+- `https://kafka.donethanks.com` -> `kafka/kafka-ui`
+
+Kafka brokers are not exposed outside the cluster.
+
 ## Deploy
 
 ```bash
@@ -51,7 +59,11 @@ kubectl -n argocd delete appproject pipeline
 ## Notes
 
 - `projects/pipeline/charts/kafka-ui/values.yaml` uses NodePort `30082` to avoid conflict with Argo CD server NodePort `30080`.
+- Pipeline Traefik routes are managed in:
+	- `projects/pipeline/charts/elastic/templates/traefik-routes.yaml`
+	- `projects/pipeline/charts/kafka-ui/templates/traefik-route.yaml`
 - `pipeline-kafka` uses `prune: false` to avoid accidental Kafka cluster deletion.
+- `projects/pipeline/charts/kafka/templates/kafka.yaml` sets `argocd.argoproj.io/compare-options: IgnoreExtraneous` on Strimzi-generated Kafka PVCs so `pipeline-kafka` can remain `Synced` without enabling prune.
 
 ## Troubleshooting
 

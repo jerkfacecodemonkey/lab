@@ -23,3 +23,7 @@ kafka:
     truststorePasswordKey: ca.password
 
 resources: {}
+
+ingress:
+  enabled: true
+  host: kafka.donethanks.com
