@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-data
-  namespace: {{ .Values.keycloak.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "keycloak.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgres-secrets
-  namespace: {{ .Values.keycloak.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "keycloak.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
@@ -32,7 +32,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: {{ .Values.keycloak.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "keycloak.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
@@ -72,7 +72,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: {{ .Values.keycloak.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "keycloak.labels" . | nindent 4 }}
     app.kubernetes.io/component: database
