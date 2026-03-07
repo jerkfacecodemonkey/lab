@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: adguard/adguardhome
+  pullPolicy: IfNotPresent
+  tag: "v0.107.72"
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  webPort: 80
+  setupPort: 3000
+  nodePorts:
+    web: 30080
+    setup: 30300
+
+dns:
+  port: 53
+  hostPort:
+    enabled: true
+    port: 53
+  hostNetwork:
+    enabled: false
+  service:
+    enabled: false
+    type: ClusterIP
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  storageClassName: ""
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

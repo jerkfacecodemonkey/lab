@@ -1,0 +1,21 @@
+{{- if .Values.dns.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "adguard-home.fullname" . }}-dns
+  labels:
+    {{- include "adguard-home.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.dns.service.type }}
+  selector:
+    {{- include "adguard-home.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: dns-tcp
+      protocol: TCP
+      port: {{ .Values.dns.port }}
+      targetPort: dns-tcp
+    - name: dns-udp
+      protocol: UDP
+      port: {{ .Values.dns.port }}
+      targetPort: dns-udp
+{{- end }}

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "adguard-home.fullname" . }}
+  labels:
+    {{- include "adguard-home.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "adguard-home.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "adguard-home.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.dns.hostNetwork.enabled }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      containers:
+        - name: adguard-home
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: dns-tcp
+              containerPort: {{ .Values.dns.port }}
+              protocol: TCP
+              {{- if and .Values.dns.hostPort.enabled (not .Values.dns.hostNetwork.enabled) }}
+              hostPort: {{ .Values.dns.hostPort.port }}
+              {{- end }}
+            - name: dns-udp
+              containerPort: {{ .Values.dns.port }}
+              protocol: UDP
+              {{- if and .Values.dns.hostPort.enabled (not .Values.dns.hostNetwork.enabled) }}
+              hostPort: {{ .Values.dns.hostPort.port }}
+              {{- end }}
+            - name: web
+              containerPort: {{ .Values.service.webPort }}
+              protocol: TCP
+            - name: setup
+              containerPort: {{ .Values.service.setupPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: work
+              mountPath: /opt/adguardhome/work
+            - name: conf
+              mountPath: /opt/adguardhome/conf
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: work
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "adguard-home.fullname" . }}-work
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: conf
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "adguard-home.fullname" . }}-conf
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

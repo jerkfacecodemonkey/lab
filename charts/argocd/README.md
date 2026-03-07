@@ -72,3 +72,19 @@ helm upgrade --install argocd . \
   --namespace argocd \
   --create-namespace
 ```
+
+## Load Applications Into Argo CD
+
+After Argo CD is installed, apply app manifests from this repo so they appear in the UI:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f argocd/applications/argocd.yaml
+kubectl apply -f argocd/applications/adguard-home.yaml
+```
+
+Check apps:
+
+```bash
+kubectl -n argocd get applications.argoproj.io
+```

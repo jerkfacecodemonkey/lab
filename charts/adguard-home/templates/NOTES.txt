@@ -1,0 +1,18 @@
+AdGuard Home has been installed.
+
+Web UI:      {{ .Values.service.nodePorts.web }}
+Setup UI:    {{ .Values.service.nodePorts.setup }}
+
+If your k3s server is 192.168.1.67, use:
+
+- DNS server for clients: 192.168.1.67
+- Web UI: http://192.168.1.67:{{ .Values.service.nodePorts.web }}
+- Setup UI: http://192.168.1.67:{{ .Values.service.nodePorts.setup }}
+
+{{- if .Values.dns.hostPort.enabled }}
+DNS is exposed on host port {{ .Values.dns.hostPort.port }} (TCP/UDP).
+{{- end }}
+
+{{- if .Values.dns.hostNetwork.enabled }}
+Host networking is enabled for this pod.
+{{- end }}

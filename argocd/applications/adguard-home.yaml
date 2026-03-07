@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: adguard-home
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # Update this to your Git repo URL containing this lab directory.
+    repoURL: git@github.com:jerkfacecodemonkey/lab.git
+    targetRevision: HEAD
+    path: charts/adguard-home
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: adguard-home
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
