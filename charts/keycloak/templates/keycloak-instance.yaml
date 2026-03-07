@@ -39,8 +39,9 @@ spec:
           - name: keycloak
             command:
               - /opt/keycloak/bin/kc.sh
-            args:
               - start-dev
+              - --http-enabled=true
+              - --hostname-strict=false
             resources:
               {{- toYaml .Values.keycloak.resources | nindent 14 }}
   {{- else }}
