@@ -10,6 +10,14 @@ spec:
   tls: {}
   routes:
     - kind: Rule
+      match: Host(`traefik.donethanks.com`) && Path(`/`)
+      middlewares:
+        - name: traefik-dashboard-root-redirect
+          namespace: kube-system
+      services:
+        - kind: TraefikService
+          name: api@internal
+    - kind: Rule
       match: PathPrefix(`/api`) || PathPrefix(`/dashboard`)
       services:
         - kind: TraefikService

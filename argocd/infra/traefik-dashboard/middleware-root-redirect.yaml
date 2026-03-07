@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-dashboard-root-redirect
+  namespace: kube-system
+spec:
+  redirectRegex:
+    regex: "^https?://traefik\\.donethanks\\.com/?$"
+    replacement: "https://traefik.donethanks.com/dashboard/"
+    permanent: true
