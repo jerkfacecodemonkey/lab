@@ -54,6 +54,11 @@ spec:
   roles:
     - broker
     - controller
+  template:
+    persistentVolumeClaim:
+      metadata:
+        annotations:
+          argocd.argoproj.io/compare-options: IgnoreExtraneous
   storage:
     type: persistent-claim
     size: {{ .Values.nodePool.storage.size }}
