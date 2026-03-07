@@ -1,0 +1,6 @@
+Argo CD installed.
+
+If this is a fresh install, get the initial admin password with:
+
+kubectl -n {{ .Release.Namespace }} get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' | base64 --decode; echo

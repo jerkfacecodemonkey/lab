@@ -1,0 +1,55 @@
+argo-cd:
+  crds:
+    install: true
+
+  global:
+    domain: argo.donethanks.com
+
+  configs:
+    cm:
+      url: https://argo.donethanks.com
+    params:
+      server.insecure: true
+
+  dex:
+    enabled: false
+
+  notifications:
+    enabled: false
+
+  server:
+    # Default pattern for this environment:
+    # Caddy terminates TLS for https://argo.donethanks.com and proxies
+    # to this fixed NodePort on the k3s server.
+    service:
+      type: NodePort
+      nodePortHttp: 30080
+      nodePortHttps: 30443
+
+    ingress:
+      enabled: false
+      ingressClassName: traefik
+      hostname: argo.donethanks.com
+      path: /
+      pathType: Prefix
+      tls: false
+
+    # Optional permanent port mapping alternative:
+    # service:
+    #   type: NodePort
+    #   nodePortHttp: 30080
+    #   nodePortHttps: 30443
+    # ingress:
+    #   enabled: false
+
+  controller:
+    metrics:
+      enabled: true
+
+  repoServer:
+    metrics:
+      enabled: true
+
+  applicationSet:
+    metrics:
+      enabled: true
