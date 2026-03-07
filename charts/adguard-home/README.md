@@ -35,7 +35,7 @@ Using server `192.168.1.67` from this homelab:
 
 ## Split DNS (GitOps Managed)
 
-This chart can enforce AdGuard rewrites on every pod start, so settings are not lost or drift from Argo CD.
+This chart enforces AdGuard `user_rules` (`dnsrewrite`) on every pod start, so settings are not lost or drift from Argo CD.
 
 Default rewrites:
 

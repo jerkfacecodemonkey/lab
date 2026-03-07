@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "adguard-home.labels" . | nindent 4 }}
 spec:
+  strategy:
+    type: {{- if or .Values.dns.hostPort.enabled .Values.dns.hostNetwork.enabled -}}Recreate{{- else -}}RollingUpdate{{- end }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -35,29 +37,27 @@ spec:
               fi
 
               awk '
-                BEGIN { in_rewrites=0; inserted=0 }
-                /^  rewrites:/ {
-                  print "  rewrites:"
+                BEGIN { in_rules=0; inserted=0 }
+                /^user_rules:/ {
+                  print "user_rules:"
 {{- range .Values.splitDns.domains }}
-                  print "    - domain: {{ . }}"
-                  print "      answer: {{ $.Values.splitDns.answer }}"
+                  print "  - \"||{{ . }}^$dnsrewrite=NOERROR;A;{{ $.Values.splitDns.answer }}\""
 {{- end }}
-                  in_rewrites=1
+                  in_rules=1
                   inserted=1
                   next
                 }
-                in_rewrites && /^  [a-z_]+:/ {
-                  in_rewrites=0
+                in_rules && /^[a-z_]+:/ {
+                  in_rules=0
                 }
-                !in_rewrites {
+                !in_rules {
                   print
                 }
                 END {
                   if (!inserted) {
-                    print "  rewrites:"
+                    print "user_rules:"
 {{- range .Values.splitDns.domains }}
-                    print "    - domain: {{ . }}"
-                    print "      answer: {{ $.Values.splitDns.answer }}"
+                    print "  - \"||{{ . }}^$dnsrewrite=NOERROR;A;{{ $.Values.splitDns.answer }}\""
 {{- end }}
                   }
                 }
