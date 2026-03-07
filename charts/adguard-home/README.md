@@ -5,7 +5,7 @@ This chart deploys AdGuard Home for homelab use with DNS exposed on node port `5
 ## Defaults
 
 - DNS TCP/UDP: `53` via `hostPort`
-- Web UI: `30080`
+- Web UI: `30081`
 - Setup UI: `30300`
 
 ## Install
@@ -23,7 +23,7 @@ Using server `192.168.1.67` from this homelab:
 
 - Configure client DNS to: `192.168.1.67`
 - Open setup UI: `http://192.168.1.67:30300`
-- Open web UI: `http://192.168.1.67:30080`
+- Open web UI: `http://192.168.1.67:30081`
 
 ## DNS Exposure Modes
 

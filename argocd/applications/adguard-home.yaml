@@ -6,10 +6,13 @@ metadata:
 spec:
   project: default
   source:
-    # Update this to your Git repo URL containing this lab directory.
     repoURL: git@github.com:jerkfacecodemonkey/lab.git
     targetRevision: HEAD
     path: charts/adguard-home
+    helm:
+      parameters:
+        - name: service.nodePorts.web
+          value: "30081"
   destination:
     server: https://kubernetes.default.svc
     namespace: adguard-home

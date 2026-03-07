@@ -13,7 +13,7 @@ service:
   webPort: 80
   setupPort: 3000
   nodePorts:
-    web: 30080
+    web: 30081
     setup: 30300
 
 dns:
