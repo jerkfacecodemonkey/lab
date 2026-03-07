@@ -18,7 +18,7 @@ spec:
         - kind: TraefikService
           name: api@internal
     - kind: Rule
-      match: PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+      match: Host(`traefik.donethanks.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       services:
         - kind: TraefikService
           name: api@internal
