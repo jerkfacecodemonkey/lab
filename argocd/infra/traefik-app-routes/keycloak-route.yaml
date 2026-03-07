@@ -1,0 +1,42 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: keycloak-redirect-https
+  namespace: keycloak
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: keycloak-http
+  namespace: keycloak
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`keycloak.donethanks.com`)
+      middlewares:
+        - name: keycloak-redirect-https
+      services:
+        - name: keycloak-service
+          port: 8080
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: keycloak-https
+  namespace: keycloak
+spec:
+  entryPoints:
+    - websecure
+  tls: {}
+  routes:
+    - kind: Rule
+      match: Host(`keycloak.donethanks.com`)
+      services:
+        - name: keycloak-service
+          port: 8080

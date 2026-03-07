@@ -1,0 +1,49 @@
+operator:
+  image:
+    repository: quay.io/keycloak/keycloak-operator
+    tag: "26.0.7"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+keycloak:
+  enabled: true
+  replicas: 1
+  image: quay.io/keycloak/keycloak:26.0.7
+  
+  # Start mode - use 'start-dev' for H2 database (no external DB needed)
+  # or 'start' for production with external database
+  startMode: start-dev
+  
+  # Admin credentials secret
+  adminSecret:
+    create: true
+    name: keycloak-initial-admin
+    username: admin
+    # password will be generated if not set
+    password: "change-me-admin"
+  
+  # Hostname for Keycloak
+  hostname: keycloak.donethanks.com
+  
+  # Additional Keycloak options
+  additionalOptions: []
+    # - name: features
+    #   value: "token-exchange,admin-fine-grained-authz"
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+ingress:
+  enabled: true
+  host: keycloak.donethanks.com
