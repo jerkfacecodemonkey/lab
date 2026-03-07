@@ -36,3 +36,20 @@ kubectl apply -f argocd/applications/adguard-home.yaml
 
 - `argocd`
 - `adguard-home`
+
+## Traefik Dashboard
+
+Permanent Traefik dashboard manifests are in:
+
+- `argocd/infra/traefik-dashboard/`
+
+Apply with:
+
+```bash
+cd /home/jason/dev/lab
+kubectl apply -f argocd/infra/traefik-dashboard/
+```
+
+Access:
+
+- `http://traefik.donethanks.com/dashboard/`
