@@ -47,3 +47,6 @@ splitDns:
   domains:
     - donethanks.com
     - "*.donethanks.com"
+
+uiAuth:
+  disableBuiltIn: true
