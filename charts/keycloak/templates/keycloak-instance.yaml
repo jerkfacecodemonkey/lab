@@ -21,7 +21,7 @@ spec:
     tlsSecret: ""
   
   hostname:
-    hostname: https://{{ .Values.keycloak.hostname }}
+    hostname: {{ .Values.keycloak.hostname }}
     strict: false
 
   proxy:
