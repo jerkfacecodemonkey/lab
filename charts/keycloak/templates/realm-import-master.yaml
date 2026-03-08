@@ -115,4 +115,43 @@ spec:
     webAuthnPolicyPasswordlessUserVerificationRequirement: required
     webAuthnPolicyPasswordlessCreateTimeout: 60
     webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister: false
+    
+    # OIDC Clients
+    clients:
+      - clientId: argocd
+        name: Argo CD
+        description: "Argo CD continuous delivery platform"
+        enabled: true
+        protocol: openid-connect
+        publicClient: false
+        clientAuthenticatorType: client-secret
+        secret: {{ .Values.keycloak.clients.argocd.secret | quote }}
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        directAccessGrantsEnabled: false
+        serviceAccountsEnabled: false
+        redirectUris:
+          - "https://argo.donethanks.com/auth/callback"
+        webOrigins:
+          - "https://argo.donethanks.com"
+        attributes:
+          pkce.code.challenge.method: S256
+        defaultClientScopes:
+          - profile
+          - email
+          - roles
+        optionalClientScopes:
+          - groups
+        protocolMappers:
+          - name: realm-roles-mapper
+            protocol: openid-connect
+            protocolMapper: oidc-usermodel-realm-role-mapper
+            consentRequired: false
+            config:
+              claim.name: groups
+              jsonType.label: String
+              multivalued: "true"
+              userinfo.token.claim: "true"
+              id.token.claim: "true"
+              access.token.claim: "true"
 {{- end }}

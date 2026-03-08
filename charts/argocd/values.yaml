@@ -8,6 +8,38 @@ argo-cd:
   configs:
     cm:
       url: https://argo.donethanks.com
+      
+      # Keycloak OIDC configuration
+      oidc.config: |
+        name: Keycloak
+        issuer: https://keycloak.donethanks.com/realms/master
+        clientID: argocd
+        clientSecret: $oidc.keycloak.clientSecret
+        requestedScopes:
+          - openid
+          - profile
+          - email
+          - groups
+        requestedIDTokenClaims:
+          groups:
+            essential: true
+    
+    # OIDC client secret (will be created as a secret)
+    secret:
+      extra:
+        oidc.keycloak.clientSecret: "argocd-keycloak-client-secret-change-me"
+    
+    # RBAC policy - map Keycloak groups to Argo CD roles
+    rbac:
+      policy.csv: |
+        # Default role for authenticated users
+        g, argocd-users, role:readonly
+        
+        # Admin role for admin realm role
+        g, admin, role:admin
+      
+      policy.default: role:readonly
+    
     params:
       server.insecure: true
 

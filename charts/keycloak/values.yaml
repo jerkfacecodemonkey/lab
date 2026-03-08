@@ -44,6 +44,11 @@ keycloak:
   realmImport:
     enabled: true
   
+  # OIDC Clients configuration
+  clients:
+    argocd:
+      secret: "argocd-keycloak-client-secret-change-me"
+  
   # Additional Keycloak options
   additionalOptions: []
     # - name: features
