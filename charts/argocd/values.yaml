@@ -12,10 +12,9 @@ argo-cd:
       # Keycloak OIDC configuration
       oidc.config: |
         name: Keycloak
-        issuer: http://keycloak-service.keycloak.svc.cluster.local:8080/realms/master
+        issuer: https://keycloak.donethanks.com/realms/master
         clientID: argocd
         clientSecret: $oidc.keycloak.clientSecret
-        insecureSkipIssuerVerify: true
         requestedScopes:
           - openid
           - profile
@@ -54,6 +53,13 @@ argo-cd:
     # Default pattern for this environment:
     # Caddy terminates TLS for https://argo.donethanks.com and proxies
     # to this fixed NodePort on the k3s server.
+    
+    # Add hostAliases to resolve keycloak.donethanks.com to internal service
+    hostAliases:
+      - ip: "10.43.41.215"
+        hostnames:
+          - "keycloak.donethanks.com"
+    
     service:
       type: NodePort
       nodePortHttp: 30080
