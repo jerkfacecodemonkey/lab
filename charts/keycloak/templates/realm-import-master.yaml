@@ -1,0 +1,118 @@
+{{- if .Values.keycloak.realmImport.enabled }}
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: master-realm-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+spec:
+  keycloakCRName: keycloak
+  realm:
+    id: master
+    realm: master
+    enabled: true
+    
+    # Set browser flow to use passkeys
+    browserFlow: browser-passwordless
+    
+    # Authentication flows
+    authenticationFlows:
+      - alias: browser-passwordless
+        description: Browser based authentication with passkey support
+        providerId: basic-flow
+        topLevel: true
+        builtIn: false
+        authenticationExecutions:
+          - authenticator: auth-cookie
+            authenticatorFlow: false
+            requirement: ALTERNATIVE
+            priority: 10
+            autheticatorFlow: false
+          
+          - authenticator: auth-spnego
+            authenticatorFlow: false
+            requirement: DISABLED
+            priority: 20
+            autheticatorFlow: false
+          
+          - authenticator: identity-provider-redirector
+            authenticatorFlow: false
+            requirement: ALTERNATIVE
+            priority: 25
+            autheticatorFlow: false
+          
+          - flowAlias: browser-passwordless-forms
+            requirement: ALTERNATIVE
+            priority: 30
+            autheticatorFlow: true
+      
+      - alias: browser-passwordless-forms
+        description: Username, password, passkey and other auth forms
+        providerId: basic-flow
+        topLevel: false
+        builtIn: false
+        authenticationExecutions:
+          - authenticator: auth-username-form
+            authenticatorFlow: false
+            requirement: REQUIRED
+            priority: 10
+            autheticatorFlow: false
+          
+          - flowAlias: browser-passwordless-authentication
+            requirement: REQUIRED
+            priority: 20
+            autheticatorFlow: true
+      
+      - alias: browser-passwordless-authentication
+        description: Passkey or Password authentication
+        providerId: basic-flow
+        topLevel: false
+        builtIn: false
+        authenticationExecutions:
+          - authenticator: webauthn-authenticator-passwordless
+            authenticatorFlow: false
+            requirement: ALTERNATIVE
+            priority: 10
+            autheticatorFlow: false
+          
+          - authenticator: auth-password-form
+            authenticatorFlow: false
+            requirement: ALTERNATIVE
+            priority: 20
+            autheticatorFlow: false
+          
+          - flowAlias: Browser - Conditional OTP
+            requirement: CONDITIONAL
+            priority: 30
+            autheticatorFlow: true
+    
+    # Required actions
+    requiredActions:
+      - alias: webauthn-register-passwordless
+        name: Webauthn Register Passwordless
+        providerId: webauthn-register-passwordless
+        enabled: true
+        defaultAction: false
+        priority: 80
+      
+      - alias: webauthn-register
+        name: Webauthn Register
+        providerId: webauthn-register
+        enabled: true
+        defaultAction: false
+        priority: 90
+    
+    # WebAuthn Passwordless Policy
+    webAuthnPolicyPasswordlessRpEntityName: {{ .Values.keycloak.hostname }}
+    webAuthnPolicyPasswordlessSignatureAlgorithms:
+      - ES256
+      - RS256
+    webAuthnPolicyPasswordlessRpId: {{ .Values.keycloak.hostname }}
+    webAuthnPolicyPasswordlessAttestationConveyancePreference: none
+    webAuthnPolicyPasswordlessAuthenticatorAttachment: cross-platform
+    webAuthnPolicyPasswordlessRequireResidentKey: "Yes"
+    webAuthnPolicyPasswordlessUserVerificationRequirement: required
+    webAuthnPolicyPasswordlessCreateTimeout: 60
+    webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister: false
+{{- end }}

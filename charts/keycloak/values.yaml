@@ -40,6 +40,10 @@ keycloak:
       - passkeys
     disabled: []
   
+  # Realm import configuration
+  realmImport:
+    enabled: true
+  
   # Additional Keycloak options
   additionalOptions: []
     # - name: features
