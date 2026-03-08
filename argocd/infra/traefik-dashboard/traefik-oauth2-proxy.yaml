@@ -38,7 +38,7 @@ spec:
             - --oidc-email-claim=email
             - --code-challenge-method=S256
             - --redirect-url=https://traefik.donethanks.com/oauth2/callback
-            - --upstream=http://traefik-dashboard-api.kube-system.svc.cluster.local:8080
+            - --upstream=static://200
             - --email-domain=*
             - --scope=openid
             - --cookie-secure=true
