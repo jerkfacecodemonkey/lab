@@ -174,4 +174,25 @@ spec:
           - roles
         optionalClientScopes:
           - groups
+        protocolMappers:
+          - name: email-direct
+            protocol: openid-connect
+            protocolMapper: oidc-usermodel-property-mapper
+            consentRequired: false
+            config:
+              user.attribute: email
+              claim.name: email
+              jsonType.label: String
+              userinfo.token.claim: "true"
+              id.token.claim: "true"
+              access.token.claim: "true"
+              introspection.token.claim: "true"
+          - name: audience-direct
+            protocol: openid-connect
+            protocolMapper: oidc-audience-mapper
+            consentRequired: false
+            config:
+              included.client.audience: adguard-oauth
+              id.token.claim: "true"
+              access.token.claim: "true"
 {{- end }}
