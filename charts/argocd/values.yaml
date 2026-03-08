@@ -4,6 +4,12 @@ argo-cd:
 
   global:
     domain: argo.donethanks.com
+    # Resolve Keycloak hostname to Traefik's cluster service so HTTPS/443 works.
+    # Keycloak's backend service only exposes 8080 and cannot serve TLS directly.
+    hostAliases:
+      - ip: "10.43.78.203"
+        hostnames:
+          - "keycloak.donethanks.com"
 
   configs:
     cm:
@@ -55,13 +61,6 @@ argo-cd:
     # Default pattern for this environment:
     # Caddy terminates TLS for https://argo.donethanks.com and proxies
     # to this fixed NodePort on the k3s server.
-    
-    # Resolve Keycloak hostname to Traefik's cluster service so HTTPS/443 works.
-    # Keycloak's backend service only exposes 8080 and cannot serve TLS directly.
-    hostAliases:
-      - ip: "10.43.78.203"
-        hostnames:
-          - "keycloak.donethanks.com"
     
     service:
       type: NodePort
