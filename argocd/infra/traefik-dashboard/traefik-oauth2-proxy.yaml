@@ -6,7 +6,7 @@ metadata:
 type: Opaque
 stringData:
   OAUTH2_PROXY_CLIENT_SECRET: "traefik-oauth-client-secret-change-me"
-  OAUTH2_PROXY_COOKIE_SECRET: "Q9m2wLp8Vt6xRz1cK4hWf3jDs7bNq5u"
+  OAUTH2_PROXY_COOKIE_SECRET: "Q9m2wLp8Vt6xRz1cK4hWf3jDs7bNq5uX"
 ---
 apiVersion: apps/v1
 kind: Deployment
