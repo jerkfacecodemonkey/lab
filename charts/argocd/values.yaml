@@ -12,9 +12,11 @@ argo-cd:
       # Keycloak OIDC configuration
       oidc.config: |
         name: Keycloak
-        issuer: http://keycloak.donethanks.com:8080/realms/master
+        issuer: https://keycloak.donethanks.com/realms/master
         clientID: argocd
         clientSecret: $oidc.keycloak.clientSecret
+        insecureEnableGroups: true
+        insecureSkipVerify: true
         requestedScopes:
           - openid
           - profile
