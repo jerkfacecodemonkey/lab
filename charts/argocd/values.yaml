@@ -25,9 +25,6 @@ argo-cd:
         insecureSkipVerify: true
         requestedScopes:
           - openid
-          - profile
-          - email
-          - groups
         requestedIDTokenClaims:
           groups:
             essential: true
