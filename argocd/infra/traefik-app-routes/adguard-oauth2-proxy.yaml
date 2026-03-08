@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: adguard-oauth2-proxy-secrets
+  namespace: adguard-home
+type: Opaque
+stringData:
+  OAUTH2_PROXY_CLIENT_SECRET: "adguard-oauth-client-secret-change-me"
+  OAUTH2_PROXY_COOKIE_SECRET: "Qn8y4mLp2Vt6xRz1cK9hWf3jDs7bNq5u"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-oauth2-proxy
+  namespace: adguard-home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: adguard-oauth2-proxy
+    spec:
+      hostAliases:
+        - ip: "10.43.78.203"
+          hostnames:
+            - "keycloak.donethanks.com"
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --http-address=0.0.0.0:4180
+            - --provider=keycloak-oidc
+            - --oidc-issuer-url=https://keycloak.donethanks.com/realms/master
+            - --redirect-url=https://adguard.donethanks.com/oauth2/callback
+            - --upstream=http://adguard-home.adguard-home.svc.cluster.local:80
+            - --email-domain=*
+            - --scope=openid profile email
+            - --cookie-secure=true
+            - --cookie-samesite=lax
+            - --cookie-refresh=1h
+            - --set-xauthrequest=true
+            - --pass-authorization-header=true
+            - --pass-access-token=true
+            - --pass-user-headers=true
+            - --reverse-proxy=true
+            - --skip-provider-button=true
+            - --client-id=adguard-oauth
+          env:
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-oauth2-proxy-secrets
+                  key: OAUTH2_PROXY_CLIENT_SECRET
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-oauth2-proxy-secrets
+                  key: OAUTH2_PROXY_COOKIE_SECRET
+          ports:
+            - containerPort: 4180
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-oauth2-proxy
+  namespace: adguard-home
+spec:
+  selector:
+    app: adguard-oauth2-proxy
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http

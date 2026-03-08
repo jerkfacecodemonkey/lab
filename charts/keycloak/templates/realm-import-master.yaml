@@ -152,4 +152,26 @@ spec:
               userinfo.token.claim: "true"
               id.token.claim: "true"
               access.token.claim: "true"
+      - clientId: adguard-oauth
+        name: AdGuard OAuth Proxy
+        description: "OAuth2 Proxy in front of AdGuard Home"
+        enabled: true
+        protocol: openid-connect
+        publicClient: false
+        clientAuthenticatorType: client-secret
+        secret: {{ .Values.keycloak.clients.adguardOauth.secret | quote }}
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        directAccessGrantsEnabled: false
+        serviceAccountsEnabled: false
+        redirectUris:
+          - "https://adguard.donethanks.com/oauth2/callback"
+        webOrigins:
+          - "https://adguard.donethanks.com"
+        defaultClientScopes:
+          - profile
+          - email
+          - roles
+        optionalClientScopes:
+          - groups
 {{- end }}

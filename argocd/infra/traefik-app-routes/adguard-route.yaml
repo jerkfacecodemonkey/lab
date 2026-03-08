@@ -36,7 +36,12 @@ spec:
   tls: {}
   routes:
     - kind: Rule
+      match: Host(`adguard.donethanks.com`) && PathPrefix(`/oauth2`)
+      services:
+        - name: adguard-oauth2-proxy
+          port: 4180
+    - kind: Rule
       match: Host(`adguard.donethanks.com`)
       services:
-        - name: adguard-home
-          port: 80
+        - name: adguard-oauth2-proxy
+          port: 4180

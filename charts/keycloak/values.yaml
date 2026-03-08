@@ -48,6 +48,8 @@ keycloak:
   clients:
     argocd:
       secret: "argocd-keycloak-client-secret-change-me"
+    adguardOauth:
+      secret: "adguard-oauth-client-secret-change-me"
   
   # Additional Keycloak options
   additionalOptions: []
