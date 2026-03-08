@@ -39,7 +39,7 @@ spec:
             - --redirect-url=https://adguard.donethanks.com/oauth2/callback
             - --upstream=http://adguard-home.adguard-home.svc.cluster.local:80
             - --email-domain=*
-            - --scope=openid profile email
+            - --scope=openid
             - --cookie-secure=true
             - --cookie-samesite=lax
             - --cookie-refresh=1h
