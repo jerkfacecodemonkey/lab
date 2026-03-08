@@ -20,7 +20,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if or .Values.splitDns.enabled .Values.uiAuth.disableBuiltIn }}
+      {{- if .Values.splitDns.enabled }}
       initContainers:
         - name: apply-split-dns
           image: busybox:1.36
@@ -36,34 +36,6 @@ spec:
                 exit 1
               fi
 
-{{- if .Values.uiAuth.disableBuiltIn }}
-              # oauth2-proxy is the auth boundary; remove built-in AdGuard UI auth.
-              sed -i '/^auth_attempts:/d;/^block_auth_min:/d' "$conf"
-
-              awk '
-                BEGIN { in_users=0; users_set=0 }
-                /^users:/ {
-                  print "users: []"
-                  in_users=1
-                  users_set=1
-                  next
-                }
-                in_users && /^http_proxy:/ {
-                  in_users=0
-                }
-                in_users { next }
-                { print }
-                END {
-                  if (!users_set) {
-                    print "users: []"
-                  }
-                }
-              ' "$conf" > "$tmp"
-
-              mv "$tmp" "$conf"
-{{- end }}
-
-{{- if .Values.splitDns.enabled }}
               # YAML treats unquoted '*' values as aliases. Normalize wildcard
               # rewrite domains to quoted strings before any further edits.
               sed -i -E 's#^([[:space:]]*- domain: )\*([^\"]+)$#\1"*\2"#' "$conf"
@@ -96,7 +68,6 @@ spec:
               ' "$conf" > "$tmp"
 
               mv "$tmp" "$conf"
-{{- end }}
           volumeMounts:
             - name: conf
               mountPath: /opt/adguardhome/conf
