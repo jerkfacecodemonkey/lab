@@ -38,6 +38,8 @@ spec:
 
 {{- if .Values.uiAuth.disableBuiltIn }}
               # oauth2-proxy is the auth boundary; remove built-in AdGuard UI auth.
+              sed -i '/^auth_attempts:/d;/^block_auth_min:/d' "$conf"
+
               awk '
                 BEGIN { in_users=0; users_set=0 }
                 /^users:/ {
@@ -46,12 +48,10 @@ spec:
                   users_set=1
                   next
                 }
-                in_users && /^[a-z_]+:/ {
+                in_users && /^http_proxy:/ {
                   in_users=0
                 }
                 in_users { next }
-                /^auth_attempts:/ { next }
-                /^block_auth_min:/ { next }
                 { print }
                 END {
                   if (!users_set) {
