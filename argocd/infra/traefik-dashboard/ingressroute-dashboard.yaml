@@ -10,15 +10,20 @@ spec:
   tls: {}
   routes:
     - kind: Rule
+      match: Host(`traefik.donethanks.com`) && PathPrefix(`/oauth2`)
+      services:
+        - name: traefik-oauth2-proxy
+          port: 4180
+    - kind: Rule
       match: Host(`traefik.donethanks.com`) && Path(`/`)
       middlewares:
         - name: traefik-dashboard-root-redirect
           namespace: kube-system
       services:
-        - kind: TraefikService
-          name: api@internal
+        - name: traefik-oauth2-proxy
+          port: 4180
     - kind: Rule
       match: Host(`traefik.donethanks.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       services:
-        - kind: TraefikService
-          name: api@internal
+        - name: traefik-oauth2-proxy
+          port: 4180

@@ -4,7 +4,8 @@ This directory exposes the built-in Traefik dashboard permanently via an Ingress
 
 ## Resources
 
-- `ingressroute-dashboard.yaml` routes `traefik.donethanks.com` to `api@internal`
+- `ingressroute-dashboard.yaml` routes `traefik.donethanks.com` through oauth2-proxy
+- `traefik-oauth2-proxy.yaml` deploys oauth2-proxy for Keycloak OIDC auth
 - `middleware-ipallowlist.yaml` optional IP allowlist middleware (not currently attached)
 
 ## Apply

@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-oauth2-proxy-secrets
+  namespace: kube-system
+type: Opaque
+stringData:
+  OAUTH2_PROXY_CLIENT_SECRET: "traefik-oauth-client-secret-change-me"
+  OAUTH2_PROXY_COOKIE_SECRET: "Q9m2wLp8Vt6xRz1cK4hWf3jDs7bNq5u"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-oauth2-proxy
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: traefik-oauth2-proxy
+    spec:
+      hostAliases:
+        - ip: "10.43.78.203"
+          hostnames:
+            - "keycloak.donethanks.com"
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --http-address=0.0.0.0:4180
+            - --provider=keycloak-oidc
+            - --oidc-issuer-url=https://keycloak.donethanks.com/realms/master
+            - --oidc-email-claim=email
+            - --code-challenge-method=S256
+            - --redirect-url=https://traefik.donethanks.com/oauth2/callback
+            - --upstream=http://traefik.kube-system.svc.cluster.local
+            - --email-domain=*
+            - --scope=openid
+            - --cookie-secure=true
+            - --cookie-samesite=lax
+            - --cookie-refresh=1h
+            - --set-xauthrequest=true
+            - --pass-authorization-header=true
+            - --pass-access-token=true
+            - --pass-user-headers=true
+            - --reverse-proxy=true
+            - --skip-provider-button=true
+            - --client-id=traefik-oauth
+          env:
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: traefik-oauth2-proxy-secrets
+                  key: OAUTH2_PROXY_CLIENT_SECRET
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: traefik-oauth2-proxy-secrets
+                  key: OAUTH2_PROXY_COOKIE_SECRET
+          ports:
+            - containerPort: 4180
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-oauth2-proxy
+  namespace: kube-system
+spec:
+  selector:
+    app: traefik-oauth2-proxy
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http
