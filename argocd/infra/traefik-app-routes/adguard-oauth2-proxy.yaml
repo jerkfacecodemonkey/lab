@@ -36,6 +36,7 @@ spec:
             - --provider=keycloak-oidc
             - --oidc-issuer-url=https://keycloak.donethanks.com/realms/master
             - --oidc-email-claim=email
+            - --insecure-oidc-allow-unverified-email=true
             - --code-challenge-method=S256
             - --redirect-url=https://adguard.donethanks.com/oauth2/callback
             - --upstream=http://adguard-home.adguard-home.svc.cluster.local:80
