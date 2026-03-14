@@ -12,7 +12,8 @@ security:
     username: kibana_system
     password: "change-me-kibana"
   oidc:
-    enabled: true
+    # Native Elasticsearch/Kibana OIDC realms require a higher Elastic license tier.
+    enabled: false
     realm: oidc1
     issuer: https://keycloak.donethanks.com/realms/master
     clientId: kibana-oidc
@@ -23,6 +24,14 @@ security:
     kibana:
       host: kibana.donethanks.com
       postLogoutPath: /logged_out
+
+kibanaSso:
+  enabled: true
+  issuer: https://keycloak.donethanks.com/realms/master
+  clientId: kibana-oauth
+  clientSecret: "change-me-kibana-oauth-client-secret"
+  cookieSecret: "change-me-32-byte-cookie-secret"
+  emailDomain: "*"
 
 elasticsearch:
   image:

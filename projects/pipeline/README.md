@@ -35,11 +35,16 @@ Elastic chart defaults to self-managed credentials. Override values or create se
 
 ### Keycloak SSO For Kibana
 
-The Elastic chart now supports OIDC with Keycloak.
+This chart supports two modes:
 
-- Set `security.oidc.enabled: true` in `projects/pipeline/charts/elastic/values.yaml`.
-- Set `security.oidc.clientId` to the Keycloak client ID for Kibana.
-- Export `ELASTIC_OIDC_CLIENT_SECRET` in `.env` and run:
+- Native OIDC (`security.oidc.*`) for Kibana/Elasticsearch auth providers.
+- Edge SSO via oauth2-proxy (`kibanaSso.*`) in front of Kibana.
+
+In this lab, Elasticsearch runs on a Basic license, so use edge SSO.
+
+- Set `kibanaSso.enabled: true` in `projects/pipeline/charts/elastic/values.yaml`.
+- Set `kibanaSso.clientId` to the Keycloak client ID for oauth2-proxy.
+- Export `KIBANA_OAUTH_CLIENT_SECRET` and `KIBANA_OAUTH_COOKIE_SECRET` in `.env` and run:
 
 ```bash
 cd /home/jason/dev/lab

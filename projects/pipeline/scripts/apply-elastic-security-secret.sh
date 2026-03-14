@@ -15,6 +15,8 @@ ELASTIC_PASSWORD="${ELASTIC_PASSWORD:-}"
 KIBANA_USERNAME="${KIBANA_USERNAME:-}"
 KIBANA_PASSWORD="${KIBANA_PASSWORD:-}"
 ELASTIC_OIDC_CLIENT_SECRET="${ELASTIC_OIDC_CLIENT_SECRET:-}"
+KIBANA_OAUTH_CLIENT_SECRET="${KIBANA_OAUTH_CLIENT_SECRET:-}"
+KIBANA_OAUTH_COOKIE_SECRET="${KIBANA_OAUTH_COOKIE_SECRET:-}"
 NAMESPACE="${ELASTIC_NAMESPACE:-elastic}"
 SECRET_NAME="${ELASTIC_SECURITY_SECRET_NAME:-elastic-credentials}"
 
@@ -36,6 +38,12 @@ kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply
 EXTRA_SECRET_ARGS=()
 if [[ -n "${ELASTIC_OIDC_CLIENT_SECRET}" ]]; then
   EXTRA_SECRET_ARGS+=(--from-literal=oidc-client-secret="${ELASTIC_OIDC_CLIENT_SECRET}")
+fi
+if [[ -n "${KIBANA_OAUTH_CLIENT_SECRET}" ]]; then
+  EXTRA_SECRET_ARGS+=(--from-literal=kibana-oauth-client-secret="${KIBANA_OAUTH_CLIENT_SECRET}")
+fi
+if [[ -n "${KIBANA_OAUTH_COOKIE_SECRET}" ]]; then
+  EXTRA_SECRET_ARGS+=(--from-literal=kibana-oauth-cookie-secret="${KIBANA_OAUTH_COOKIE_SECRET}")
 fi
 
 kubectl -n "${NAMESPACE}" create secret generic "${SECRET_NAME}" \

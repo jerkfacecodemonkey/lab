@@ -1,0 +1,84 @@
+{{- if and .Values.ingress.enabled .Values.kibanaSso.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana-oauth2-proxy
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "elastic.labels" . | nindent 4 }}
+    app.kubernetes.io/component: kibana-oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kibana-oauth2-proxy
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "elastic.labels" . | nindent 8 }}
+        app.kubernetes.io/component: kibana-oauth2-proxy
+    spec:
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --http-address=0.0.0.0:4180
+            - --provider=keycloak-oidc
+            - --oidc-issuer-url={{ .Values.kibanaSso.issuer }}
+            - --oidc-email-claim=email
+            - --code-challenge-method=S256
+            - --redirect-url=https://{{ .Values.ingress.kibanaHost }}/oauth2/callback
+            - --upstream=http://kibana.{{ .Values.namespace }}.svc.cluster.local:{{ .Values.kibana.service.port }}
+            - --email-domain={{ .Values.kibanaSso.emailDomain }}
+            - --scope=openid profile email
+            - --cookie-secure=true
+            - --cookie-samesite=lax
+            - --cookie-refresh=1h
+            - --set-xauthrequest=true
+            - --pass-authorization-header=true
+            - --pass-access-token=true
+            - --pass-user-headers=true
+            - --reverse-proxy=true
+            - --skip-provider-button=true
+            - --client-id={{ .Values.kibanaSso.clientId }}
+          env:
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "elastic.securitySecretName" . }}
+                  key: kibana-oauth-client-secret
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "elastic.securitySecretName" . }}
+                  key: kibana-oauth-cookie-secret
+          ports:
+            - containerPort: 4180
+              name: http
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana-oauth2-proxy
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "elastic.labels" . | nindent 4 }}
+    app.kubernetes.io/component: kibana-oauth2-proxy
+spec:
+  selector:
+    app.kubernetes.io/component: kibana-oauth2-proxy
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http
+{{- end }}
