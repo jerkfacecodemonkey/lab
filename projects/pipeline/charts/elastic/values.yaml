@@ -30,7 +30,7 @@ kibanaSso:
   issuer: https://keycloak.donethanks.com/realms/master
   clientId: kibana-oauth
   clientSecret: "change-me-kibana-oauth-client-secret"
-  cookieSecret: "change-me-32-byte-cookie-secret"
+  cookieSecret: "0123456789abcdef0123456789abcdef"
   emailDomain: "*"
 
 elasticsearch:

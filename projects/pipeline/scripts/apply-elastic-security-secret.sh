@@ -33,6 +33,20 @@ EOF
   exit 1
 fi
 
+if [[ -n "${KIBANA_OAUTH_COOKIE_SECRET}" ]]; then
+  COOKIE_SECRET_LEN=${#KIBANA_OAUTH_COOKIE_SECRET}
+  if [[ ${COOKIE_SECRET_LEN} -ne 16 && ${COOKIE_SECRET_LEN} -ne 24 && ${COOKIE_SECRET_LEN} -ne 32 ]]; then
+    cat >&2 <<EOF
+Invalid KIBANA_OAUTH_COOKIE_SECRET length: ${COOKIE_SECRET_LEN}
+oauth2-proxy requires 16, 24, or 32 bytes.
+Example 32-byte value:
+  KIBANA_OAUTH_COOKIE_SECRET=
+  $(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
+EOF
+    exit 1
+  fi
+fi
+
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 EXTRA_SECRET_ARGS=()
