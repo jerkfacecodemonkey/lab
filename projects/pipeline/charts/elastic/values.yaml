@@ -11,6 +11,18 @@ security:
   kibana:
     username: kibana_system
     password: "change-me-kibana"
+  oidc:
+    enabled: false
+    realm: oidc1
+    issuer: https://keycloak.donethanks.com/realms/master
+    clientId: kibana-oidc
+    clientSecret: "change-me-keycloak-client-secret"
+    claims:
+      principal: preferred_username
+      groups: groups
+    kibana:
+      host: kibana.donethanks.com
+      postLogoutPath: /logged_out
 
 elasticsearch:
   image:
