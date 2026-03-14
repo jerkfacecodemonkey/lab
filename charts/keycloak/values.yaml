@@ -52,6 +52,8 @@ keycloak:
       secret: "adguard-oauth-client-secret-change-me"
     traefikOauth:
       secret: "traefik-oauth-client-secret-change-me"
+    kibanaOauth:
+      secret: "kibana-oauth-client-secret-change-me"
   
   # Additional Keycloak options
   additionalOptions: []
