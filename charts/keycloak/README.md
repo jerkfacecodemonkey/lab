@@ -90,20 +90,6 @@ Configuration:
 
 The admin secret must contain valid credentials for Keycloak admin API access.
 
-Recommended:
-
-- Use a dedicated secret for the sync hook, e.g. `keycloak-client-sync-admin`.
-- Ensure the username/password are for an existing master realm user with admin permissions.
-
-Example:
-
-```bash
-kubectl -n keycloak create secret generic keycloak-client-sync-admin \
-  --from-literal=username=YOUR_ADMIN_USER \
-  --from-literal=password=YOUR_ADMIN_PASSWORD \
-  --dry-run=client -o yaml | kubectl apply -f -
-```
-
 The chart now manages this bootstrap/admin secret when `keycloak.adminSecret.create` is `true`, using:
 
 - `keycloak.adminSecret.name`

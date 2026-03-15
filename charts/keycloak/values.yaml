@@ -58,7 +58,7 @@ keycloak:
   clientSync:
     enabled: true
     realm: master
-    adminSecretName: keycloak-client-sync-admin
+    adminSecretName: keycloak-initial-admin
     adminUsernameKey: username
     adminPasswordKey: password
   
