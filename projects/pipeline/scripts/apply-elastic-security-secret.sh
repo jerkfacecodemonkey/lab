@@ -14,7 +14,6 @@ ELASTIC_USERNAME="${ELASTIC_USERNAME:-}"
 ELASTIC_PASSWORD="${ELASTIC_PASSWORD:-}"
 KIBANA_USERNAME="${KIBANA_USERNAME:-}"
 KIBANA_PASSWORD="${KIBANA_PASSWORD:-}"
-ELASTIC_OIDC_CLIENT_SECRET="${ELASTIC_OIDC_CLIENT_SECRET:-}"
 NAMESPACE="${ELASTIC_NAMESPACE:-elastic}"
 SECRET_NAME="${ELASTIC_SECURITY_SECRET_NAME:-elastic-credentials}"
 
@@ -33,17 +32,11 @@ fi
 
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
-EXTRA_SECRET_ARGS=()
-if [[ -n "${ELASTIC_OIDC_CLIENT_SECRET}" ]]; then
-  EXTRA_SECRET_ARGS+=(--from-literal=oidc-client-secret="${ELASTIC_OIDC_CLIENT_SECRET}")
-fi
-
 kubectl -n "${NAMESPACE}" create secret generic "${SECRET_NAME}" \
   --from-literal=elastic-username="${ELASTIC_USERNAME}" \
   --from-literal=elastic-password="${ELASTIC_PASSWORD}" \
   --from-literal=kibana-username="${KIBANA_USERNAME}" \
   --from-literal=kibana-password="${KIBANA_PASSWORD}" \
-  "${EXTRA_SECRET_ARGS[@]}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Secret ${NAMESPACE}/${SECRET_NAME} applied."

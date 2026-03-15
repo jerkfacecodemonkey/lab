@@ -25,17 +25,6 @@ spec:
         - name: elasticsearch
           image: "{{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}"
           imagePullPolicy: {{ .Values.elasticsearch.image.pullPolicy }}
-          {{- if .Values.security.oidc.enabled }}
-          command:
-            - /bin/bash
-            - -ec
-            - |
-              if ! bin/elasticsearch-keystore list >/dev/null 2>&1; then
-                bin/elasticsearch-keystore create
-              fi
-              printf '%s' "${OIDC_CLIENT_SECRET}" | bin/elasticsearch-keystore add -xf xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.rp.client_secret
-              exec /usr/local/bin/docker-entrypoint.sh
-          {{- end }}
           ports:
             - name: http
               containerPort: 9200
@@ -46,41 +35,6 @@ spec:
               value: single-node
             - name: xpack.security.enabled
               value: {{ ternary "true" "false" .Values.security.enabled | quote }}
-            {{- if .Values.security.oidc.enabled }}
-            - name: xpack.security.authc.token.enabled
-              value: "true"
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.order
-              value: "2"
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.rp.client_id
-              value: {{ .Values.security.oidc.clientId | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.rp.response_type
-              value: code
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.rp.redirect_uri
-              value: https://{{ .Values.security.oidc.kibana.host }}/api/security/oidc/callback
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.rp.post_logout_redirect_uri
-              value: https://{{ .Values.security.oidc.kibana.host }}{{ .Values.security.oidc.kibana.postLogoutPath }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.issuer
-              value: {{ .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.authorization_endpoint
-              value: {{ printf "%s/protocol/openid-connect/auth" .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.token_endpoint
-              value: {{ printf "%s/protocol/openid-connect/token" .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.userinfo_endpoint
-              value: {{ printf "%s/protocol/openid-connect/userinfo" .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.endsession_endpoint
-              value: {{ printf "%s/protocol/openid-connect/logout" .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.op.jwkset_path
-              value: {{ printf "%s/protocol/openid-connect/certs" .Values.security.oidc.issuer | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.claims.principal
-              value: {{ .Values.security.oidc.claims.principal | quote }}
-            - name: xpack.security.authc.realms.oidc.{{ .Values.security.oidc.realm }}.claims.groups
-              value: {{ .Values.security.oidc.claims.groups | quote }}
-            - name: OIDC_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "elastic.securitySecretName" . }}
-                  key: oidc-client-secret
-            {{- end }}
             {{- if .Values.security.enabled }}
             - name: ELASTIC_PASSWORD
               valueFrom:

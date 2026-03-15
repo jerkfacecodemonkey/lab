@@ -33,24 +33,6 @@ Logstash expects a secret named `logstash-elasticsearch-credentials` in namespac
 
 Elastic chart defaults to self-managed credentials. Override values or create secrets before sync if needed.
 
-### Keycloak SSO For Kibana
-
-The Elastic chart now supports OIDC with Keycloak.
-
-- Set `security.oidc.enabled: true` in `projects/pipeline/charts/elastic/values.yaml`.
-- Set `security.oidc.clientId` to the Keycloak client ID for Kibana.
-- Export `ELASTIC_OIDC_CLIENT_SECRET` in `.env` and run:
-
-```bash
-cd /home/jason/dev/lab
-projects/pipeline/scripts/apply-elastic-security-secret.sh
-```
-
-Required Keycloak client redirect/logout URLs:
-
-- `https://kibana.donethanks.com/api/security/oidc/callback`
-- `https://kibana.donethanks.com/logged_out`
-
 Worker DNS prerequisite (important for local-path PVC provisioning):
 
 - Each worker node must resolve container registries (for example `registry-1.docker.io`).

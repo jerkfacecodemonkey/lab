@@ -44,16 +44,8 @@ spec:
                   name: {{ include "elastic.securitySecretName" . }}
                   key: kibana-password
             {{- end }}
-            {{- if .Values.security.oidc.enabled }}
-            - name: XPACK_SECURITY_AUTHC_PROVIDERS_OIDC_OIDC1_ORDER
-              value: "0"
-            - name: XPACK_SECURITY_AUTHC_PROVIDERS_OIDC_OIDC1_REALM
-              value: {{ .Values.security.oidc.realm | quote }}
-            - name: XPACK_SECURITY_AUTHC_PROVIDERS_BASIC_BASIC1_ORDER
-              value: "1"
-            {{- end }}
             - name: SERVER_PUBLICBASEURL
-              value: https://{{ .Values.ingress.kibanaHost }}
+              value: http://localhost:{{ .Values.kibana.service.nodePort }}
           readinessProbe:
             httpGet:
               path: /api/status
