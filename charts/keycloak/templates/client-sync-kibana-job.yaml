@@ -73,7 +73,7 @@ spec:
                   -s 'defaultClientScopes=["profile","email","roles"]' \
                   -s 'optionalClientScopes=["groups"]' \
                   -s "redirectUris=[\"${REDIRECT_URI}\"]" \
-                  -s "webOrigins=[\"${WEB_ORIGIN}\"]")"
+                  -s "webOrigins=[\"${WEB_ORIGIN}\"]')"
               else
                 echo "Updating client ${CLIENT_ID} (${EXISTING_ID})"
                 /opt/keycloak/bin/kcadm.sh update "clients/${EXISTING_ID}" -r "${REALM}" \
