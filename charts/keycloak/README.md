@@ -90,12 +90,6 @@ Configuration:
 
 The admin secret must contain valid credentials for Keycloak admin API access.
 
-The chart now manages this bootstrap/admin secret when `keycloak.adminSecret.create` is `true`, using:
-
-- `keycloak.adminSecret.name`
-- `keycloak.adminSecret.username`
-- `keycloak.adminSecret.password`
-
 ## References
 
 - [Keycloak Operator Documentation](https://www.keycloak.org/operator/installation)
