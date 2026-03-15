@@ -53,7 +53,8 @@ projects/pipeline/scripts/apply-elastic-security-secret.sh
 
 Required Keycloak client redirect/logout URLs:
 
-- `https://kibana.donethanks.com/oauth2/callback`
+- `https://kibana.donethanks.com/api/security/oidc/callback`
+- `https://kibana.donethanks.com/logged_out`
 
 Worker DNS prerequisite (important for local-path PVC provisioning):
 
