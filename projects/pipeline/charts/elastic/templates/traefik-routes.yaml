@@ -23,8 +23,8 @@ spec:
       middlewares:
         - name: elastic-redirect-https
       services:
-        - name: {{ if .Values.kibanaSso.enabled }}kibana-oauth2-proxy{{ else }}kibana{{ end }}
-          port: {{ if .Values.kibanaSso.enabled }}4180{{ else }}{{ .Values.kibana.service.port }}{{ end }}
+        - name: kibana
+          port: {{ .Values.kibana.service.port }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -36,18 +36,11 @@ spec:
     - websecure
   tls: {}
   routes:
-    {{- if .Values.kibanaSso.enabled }}
-    - kind: Rule
-      match: Host(`{{ .Values.ingress.kibanaHost }}`) && PathPrefix(`/oauth2`)
-      services:
-        - name: kibana-oauth2-proxy
-          port: 4180
-    {{- end }}
     - kind: Rule
       match: Host(`{{ .Values.ingress.kibanaHost }}`)
       services:
-        - name: {{ if .Values.kibanaSso.enabled }}kibana-oauth2-proxy{{ else }}kibana{{ end }}
-          port: {{ if .Values.kibanaSso.enabled }}4180{{ else }}{{ .Values.kibana.service.port }}{{ end }}
+        - name: kibana
+          port: {{ .Values.kibana.service.port }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
