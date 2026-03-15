@@ -12,7 +12,7 @@ security:
     username: kibana_system
     password: "change-me-kibana"
   oidc:
-    enabled: true
+    enabled: false
     realm: oidc1
     issuer: https://keycloak.donethanks.com/realms/master
     clientId: kibana-oidc
