@@ -100,3 +100,11 @@ Use helper script to sync Kibana password in Elasticsearch to the value in `elas
 cd /home/jason/dev/lab
 projects/pipeline/scripts/set-kibana-system-password.sh
 ```
+
+### Kibana Streams/Alerts Encryption Key Error
+
+If Kibana shows errors similar to:
+
+- `Unable to create alerts client because the Encrypted Saved Objects plugin is missing encryption key`
+
+Ensure `security.kibana.encryptedSavedObjectsKey` is set in [projects/pipeline/charts/elastic/values.yaml](projects/pipeline/charts/elastic/values.yaml) and sync `pipeline-elastic` in Argo CD.

@@ -11,6 +11,7 @@ security:
   kibana:
     username: kibana_system
     password: "change-me-kibana"
+    encryptedSavedObjectsKey: "change-me-kibana-encrypted-saved-objects-key-123456"
 
 elasticsearch:
   image:

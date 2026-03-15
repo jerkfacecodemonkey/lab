@@ -43,6 +43,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "elastic.securitySecretName" . }}
                   key: kibana-password
+            - name: XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "elastic.securitySecretName" . }}
+                  key: kibana-encryptedsavedobjects-encryption-key
             {{- end }}
             - name: SERVER_PUBLICBASEURL
               value: http://localhost:{{ .Values.kibana.service.nodePort }}
