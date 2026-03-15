@@ -73,23 +73,6 @@ Application manifest:
 
 - `argocd/applications/keycloak.yaml`
 
-### Declarative Client Sync
-
-The chart includes an Argo PostSync hook Job that upserts the `kibana-oauth` client in realm `master`.
-
-Why this exists:
-
-- `KeycloakRealmImport` skips updating existing realms (`master`), so changes in `realm-import-master.yaml` are not always applied after first bootstrap.
-
-Configuration:
-
-- `keycloak.clientSync.enabled` (default: `true`)
-- `keycloak.clientSync.adminSecretName`
-- `keycloak.clientSync.adminUsernameKey`
-- `keycloak.clientSync.adminPasswordKey`
-
-The admin secret must contain valid credentials for Keycloak admin API access.
-
 ## References
 
 - [Keycloak Operator Documentation](https://www.keycloak.org/operator/installation)

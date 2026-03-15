@@ -54,13 +54,6 @@ keycloak:
       secret: "traefik-oauth-client-secret-change-me"
     kibanaOauth:
       secret: "kibana-oauth-client-secret-change-me"
-
-  clientSync:
-    enabled: true
-    realm: master
-    adminSecretName: keycloak-initial-admin
-    adminUsernameKey: username
-    adminPasswordKey: password
   
   # Additional Keycloak options
   additionalOptions: []
