@@ -45,7 +45,6 @@ In this lab, Elasticsearch runs on a Basic license, so use edge SSO.
 - Set `kibanaSso.enabled: true` in `projects/pipeline/charts/elastic/values.yaml`.
 - Set `kibanaSso.clientId` to the Keycloak client ID for oauth2-proxy.
 - Export `KIBANA_OAUTH_CLIENT_SECRET` and `KIBANA_OAUTH_COOKIE_SECRET` in `.env` and run:
-- If cluster DNS cannot resolve `keycloak.donethanks.com`, set `kibanaSso.hostAliases.ip` to Traefik service ClusterIP (`kubectl -n kube-system get svc traefik -o jsonpath='{.spec.clusterIP}'`).
 
 ```bash
 cd /home/jason/dev/lab

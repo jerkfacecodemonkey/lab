@@ -32,11 +32,6 @@ kibanaSso:
   clientSecret: "change-me-kibana-oauth-client-secret"
   cookieSecret: "0123456789abcdef0123456789abcdef"
   emailDomain: "*"
-  hostAliases:
-    enabled: true
-    ip: "10.43.78.203"
-    hostnames:
-      - keycloak.donethanks.com
 
 elasticsearch:
   image:
