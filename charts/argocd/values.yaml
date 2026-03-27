@@ -14,7 +14,10 @@ argo-cd:
   configs:
     cm:
       url: https://argo.donethanks.com
-      
+
+      # Local service accounts (bypass SSO/Keycloak)
+      accounts.orc-api: apiKey
+
       # Keycloak OIDC configuration
       oidc.config: |
         name: Keycloak
@@ -39,10 +42,16 @@ argo-cd:
       policy.csv: |
         # Default role for authenticated users
         g, argocd-users, role:readonly
-        
+
         # Admin role for admin realm role
         g, admin, role:admin
-      
+
+        # orc-api service account — scoped to the orc application only
+        p, role:orc-api, applications, get, orc/orc, allow
+        p, role:orc-api, applications, update, orc/orc, allow
+        p, role:orc-api, applications, sync, orc/orc, allow
+        g, orc-api, role:orc-api
+
       policy.default: role:readonly
     
     params:
