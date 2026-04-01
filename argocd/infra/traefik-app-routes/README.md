@@ -6,6 +6,7 @@ This directory configures HTTPS routes for:
 - `adguard.donethanks.com` -> `adguard-home/adguard-oauth2-proxy` -> `adguard-home/adguard-home`
 - `excalidraw.donethanks.com` -> `excalidraw/excalidraw`
 - `keycloak.donethanks.com` -> `keycloak/keycloak-service`
+- `bao.donethanks.com` -> `openbao/openbao-ui`
 
 Both routes use:
 

@@ -1,4 +1,7 @@
 openbao:
+  ui:
+    enabled: true
+
   injector:
     enabled: false
 
@@ -18,3 +21,27 @@ openbao:
     dataStorage:
       enabled: true
       size: 10Gi
+
+    extraContainers:
+      - name: auto-unseal
+        image: quay.io/openbao/openbao:2.5.2
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/sh
+          - -ec
+        args:
+          - |
+            while true; do
+              bao status -address=http://127.0.0.1:8200 >/tmp/bao-status.txt 2>&1 || true
+              if grep -q "Sealed.*true" /tmp/bao-status.txt; then
+                echo "OpenBao is sealed; attempting unseal"
+                bao operator unseal -address=http://127.0.0.1:8200 "${UNSEAL_KEY}" || true
+              fi
+              sleep 10
+            done
+        env:
+          - name: UNSEAL_KEY
+            valueFrom:
+              secretKeyRef:
+                name: openbao-unseal
+                key: unseal_key
