@@ -32,6 +32,7 @@ kubectl apply -f argocd/projects/core.yaml
 - `argocd/applications/adguard-home.yaml`
 - `argocd/applications/excalidraw.yaml`
 - `argocd/applications/keycloak.yaml`
+- `argocd/applications/openbao.yaml`
 - `argocd/applications/cert-manager.yaml`
 - `argocd/applications/cert-manager-infra.yaml`
 - `argocd/applications/traefik-dashboard.yaml`
@@ -46,6 +47,7 @@ kubectl apply -f argocd/applications/argocd.yaml
 kubectl apply -f argocd/applications/adguard-home.yaml
 kubectl apply -f argocd/applications/excalidraw.yaml
 kubectl apply -f argocd/applications/keycloak.yaml
+kubectl apply -f argocd/applications/openbao.yaml
 kubectl apply -f argocd/applications/cert-manager.yaml
 kubectl apply -f argocd/applications/cert-manager-infra.yaml
 kubectl apply -f argocd/applications/traefik-dashboard.yaml
@@ -59,6 +61,7 @@ kubectl apply -f argocd/applications/traefik-tls-default.yaml
 - `adguard-home`
 - `excalidraw`
 - `keycloak`
+- `openbao`
 - `cert-manager`
 - `cert-manager-infra`
 - `traefik-dashboard`

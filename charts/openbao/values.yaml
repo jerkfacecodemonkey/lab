@@ -1,0 +1,20 @@
+openbao:
+  injector:
+    enabled: false
+
+  csi:
+    enabled: false
+
+  server:
+    standalone:
+      enabled: true
+
+    ha:
+      enabled: false
+
+    dev:
+      enabled: false
+
+    dataStorage:
+      enabled: true
+      size: 10Gi
